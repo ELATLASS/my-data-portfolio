@@ -263,11 +263,27 @@ def run_analysis():
 def git_commit_and_push():
     """Commit and push changes to GitHub."""
     os.chdir(REPO_ROOT)
+
+    # Configure git identity (required in CI where no global config exists)
+    subprocess.run(["git", "config", "user.name", "Hermes Agent"], check=True)
+    subprocess.run(["git", "config", "user.email", "hermes@atlass.ai"], check=True)
+
+    # Add all changes
     subprocess.run(["git", "add", "."], check=True)
+
+    # Check if there's anything to commit
+    status = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
+    if not status.stdout.strip():
+        print("[ℹ️] Aucun changement à publier.")
+        return
+
+    # Commit
     subprocess.run(
         ["git", "commit", "-m", f"🤖 Auto-publish {WEEK_DIR_NAME}"],
         check=True
     )
+
+    # Push using the GITHUB_TOKEN provided by Actions
     subprocess.run(["git", "push"], check=True)
     print("[🚀] Rapport publié sur GitHub.")
 
