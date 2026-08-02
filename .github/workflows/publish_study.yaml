@@ -1,5 +1,10 @@
 name: Weekly Hermes Data Portfolio Publisher
 
+# Required permissions for pushing commits back to the repo
+permissions:
+  contents: write  # Allow the GITHUB_TOKEN to push commits
+  pull-requests: write
+
 on:
   schedule:
     # S'exécute chaque lundi à 08:00 UTC
@@ -13,6 +18,9 @@ jobs:
     steps:
     - name: Checkout du projet
       uses: actions/checkout@v4
+      with:
+        # Persist credentials so push works with the GITHUB_TOKEN
+        persist-credentials: true
 
     - name: Installation de Python 3.11
       uses: actions/setup-python@v5
@@ -28,6 +36,7 @@ jobs:
       env:
         # Remplace par ta variable de clé API dans GitHub Secrets (Settings > Secrets and variables > Actions)
         OPENAI_API_KEY: ${{ secrets.HERMES_LLM_API_KEY }}
+        # GITHUB_TOKEN is automatically provided by GitHub Actions
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         python scripts/publish_study.py
