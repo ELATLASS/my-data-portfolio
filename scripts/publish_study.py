@@ -20,7 +20,7 @@ from datetime import datetime, timedelta
 # --- Config ---
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECTS_DIR = os.path.join(REPO_ROOT, "projects")
-TODAY = datetime.utcnow().date()
+TODAY = datetime(2026, 7, 20).date()  # Forced date for testing
 WEEK_NUMBER = TODAY.isocalendar()[1]
 WEEK_DIR_NAME = f"{TODAY.strftime('%Y')}-W{WEEK_NUMBER:02d}-maroc"
 WEEK_DIR_PATH = os.path.join(PROJECTS_DIR, WEEK_DIR_NAME)
