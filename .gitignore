@@ -21,9 +21,9 @@ build/
 .coverage
 htmlcov/
 
-# Matplotlib
+# Matplotlib / figures — allow PNG inside projects/*/figures/
 *.png
-!figures/*.png
+!projects/*/figures/*.png
 
 # OS generated
 .DS_Store
