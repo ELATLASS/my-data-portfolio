@@ -1,6 +1,5 @@
 -- 2026-W32-maroc : Requêtes SQL pour l'analyse des données marocaines
 
--- Exemple : Top 10 villes par population (source fictive)
 WITH city_population AS (
     SELECT
         city_name,
@@ -20,7 +19,6 @@ FROM city_population
 ORDER BY population DESC
 LIMIT 10;
 
--- Exemple : Distribution géographique par région
 SELECT
     region,
     COUNT(*) AS num_cities,
@@ -31,7 +29,6 @@ FROM morocco_cities
 GROUP BY region
 ORDER BY total_population DESC;
 
--- Exemple : Croissance urbaine (fenêtre glissante sur 5 ans)
 SELECT
     city_name,
     year,

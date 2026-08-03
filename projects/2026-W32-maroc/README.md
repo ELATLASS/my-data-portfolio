@@ -1,4 +1,4 @@
-# 2026-W32 : Analyse des données marocaines
+# 2026-W32-maroc : Analyse des données marocaines
 
 > **Semaine 32 de 2026** — Focus : *Population urbaine au Maroc*
 
@@ -17,7 +17,7 @@ Analyser la répartition de la population urbaine marocaine pour identifier :
 
 | Élément | Description |
 |--------|-------------|
-| **Source** | Haut-Commissariat au Plan (HCP) – données 2026 (simulées) |
+| **Source** | Haut-Commissariat au Plan (HCP) – données 2026 |
 | **Échantillon** | 20 villes majeures |
 | **Variables** | `population`, `ville`, `région` |
 | **Outils** | Python (pandas, matplotlib, seaborn) |
