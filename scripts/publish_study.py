@@ -247,18 +247,17 @@ def build_kpi_html(data):
 
 
 def build_charts_html(data):
-    """Build chart containers HTML."""
+    """Build chart containers HTML with two canvases per topic."""
     charts = data.get("charts", [])
     if not charts:
         return ""
-    html = ""
-    for i, chart in enumerate(charts):
-        html += f'  <div class="grid-2">\n'
-        html += f'    <div class="card"><h3>{chart["title"]}</h3><div class="chart-wrap"><canvas id="chart{i}"></canvas></div></div>\n'
-        if len(charts) > 1:
-            html += f'    <div class="card"><h3>{charts[1]["title"] if len(charts) > 1 else ""}</h3><div class="chart-wrap"><canvas id="chart{i+1}"></canvas></div></div>\n'
-        html += f'  </div>\n'
-        break  # Only render first chart in this template; second chart handled by JS
+    html = '  <div class="grid-2">\n'
+    html += f'    <div class="card"><h3>{charts[0]["title"]}</h3><div class="chart-wrap"><canvas id="chart0"></canvas></div></div>\n'
+    if len(charts) > 1:
+        html += f'    <div class="card"><h3>{charts[1]["title"]}</h3><div class="chart-wrap"><canvas id="chart1"></canvas></div></div>\n'
+    else:
+        html += '    <div class="card"><h3>Répartition régionale</h3><div class="chart-wrap"><canvas id="chart1"></canvas></div></div>\n'
+    html += '  </div>\n'
     return html
 
 
@@ -294,11 +293,11 @@ def build_table_html(data):
 
 
 def build_chart_js(data):
-    """Build Chart.js initialization JS."""
+    """Build Chart.js initialization JS — returns the first chart's JS only."""
     charts = data.get("charts", [])
     if not charts:
         return ""
-    return charts[0].get("js", "") if charts else ""
+    return charts[0].get("js", "")
 
 
 def generate_topic_dashboard(topic_name, data, week_dir):
