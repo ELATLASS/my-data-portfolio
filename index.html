@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Data Portfolio — Études Automatiques</title>
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --card: #15151f;
+      --accent: #4f46e5;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --border: #27272f;
+      --green: #10b981;
+      --yellow: #f59e0b;
+    }
+    [data-theme="light"] {
+      --bg: #ffffff;
+      --card: #f8fafc;
+      --accent: #4f46e5;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --green: #059669;
+      --yellow: #d97706;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      transition: background 0.3s, color 0.3s;
+    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      padding: 3rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .avatar {
+      width: 120px; height: 120px; border-radius: 50%;
+      background: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.5rem; font-weight: 700; color: white;
+    }
+    h1 { font-size: 2.5rem; font-weight: 700; }
+    .subtitle { color: var(--muted); font-size: 1.1rem; margin-top: 0.5rem; }
+    .theme-toggle {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 8px; padding: 0.5rem 1rem; cursor: pointer;
+      color: var(--text); font-size: 0.9rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+    .card h3 { color: var(--accent); margin-bottom: 0.75rem; font-size: 1.1rem; }
+    .card ul { list-style: none; padding-left: 0; }
+    .card ul li { padding: 0.25rem 0; border-bottom: 1px solid var(--border); }
+    .card ul li:last-child { border-bottom: none; }
+    .badge {
+      display: inline-block;
+      background: var(--accent); color: white;
+      padding: 0.2rem 0.6rem; border-radius: 999px;
+      font-size: 0.75rem; font-weight: 600;
+      margin-right: 0.5rem;
+    }
+    .badge.green { background: var(--green); }
+    .badge.yellow { background: var(--yellow); color: #1e293b; }
+    footer {
+      margin-top: 3rem; padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      text-align: center; color: var(--muted); font-size: 0.85rem;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .stats { display: flex; gap: 2rem; margin: 1rem 0; flex-wrap: wrap; }
+    .stat { text-align: center; }
+    .stat .num { font-size: 2rem; font-weight: 700; color: var(--accent); }
+    .stat .label { color: var(--muted); font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <div class="avatar">EA</div>
+        <h1>Abdessamad El Atlassi</h1>
+        <p class="subtitle">Data Analyst & BI Engineer — Études hebdomadaires automatisées</p>
+      </div>
+      <button class="theme-toggle" onclick="toggleTheme()">🌓 Mode</button>
+    </header>
+
+    <div class="stats">
+      <div class="stat"><div class="num" id="projectCount">—</div><div class="label">Études publiées</div></div>
+      <div class="stat"><div class="num">2026-W32</div><div class="label">Dernière semaine</div></div>
+      <div class="stat"><div class="num">FR-Maroc</div><div class="label">Focus principal</div></div>
+    </div>
+
+    <h2>📁 Projets récents</h2>
+    <div class="grid" id="projectsGrid">
+      <p>Chargement…</p>
+    </div>
+
+    <footer>
+      <p>Généré par <a href="https://github.com/nousresearch/hermes-agent">Hermes Agent</a> · <a href="https://github.com/ELATLASS/my-data-portfolio">ELATLASS/my-data-portfolio</a></p>
+    </footer>
+  </div>
+
+  <script>
+    // Dynamically list project folders from the repo structure
+    const projects = [
+      { week: "2026-W32", title: "Analyse des données marocaines", desc: "Population urbaine au Maroc — 20 villes, HCP données 2026", tags: ["maroc", "demographie", "HCP"], color: "green" },
+      { week: "2026-W31", title: "Étude W31", desc: "Analyse en cours…", tags: ["en cours"], color: "yellow" },
+      { week: "2026-W30", title: "Étude W30", desc: "Analyse en cours…", tags: ["en cours"], color: "yellow" },
+      { week: "2026-W29", title: "Étude W29", desc: "Analyse en cours…", tags: ["en cours"], color: "yellow" },
+      { week: "2026-W28", title: "Étude W28 Hybride", desc: "FR-Maroc trade flows analysis", tags: ["maroc", "trade"], color: "green" },
+    ];
+
+    function toggleTheme() {
+      const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    }
+
+    // Load saved theme
+    if (localStorage.getItem('theme') === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+
+    // Render project cards
+    const grid = document.getElementById('projectsGrid');
+    grid.innerHTML = projects.map(p => `
+      <div class="card">
+        <h3>${p.week} — ${p.title}</h3>
+        <p>${p.desc}</p>
+        <div style="margin-top:0.75rem">
+          ${p.tags.map(t => `<span class="badge ${p.color}">${t}</span>`).join('')}
+        </div>
+      </div>
+    `).join('');
+
+    document.getElementById('projectCount').textContent = projects.length;
+  </script>
+</body>
+</html>
