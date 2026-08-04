@@ -1,15 +1,10 @@
 name: Weekly Hermes Data Portfolio Publisher
 
-# Required permissions for pushing commits back to the repo
-permissions:
-  contents: write  # Allow the GITHUB_TOKEN to push commits
-  pull-requests: write
-
 on:
   schedule:
-    # S'exécute chaque lundi à 08:00 UTC
+    # Chaque lundi à 08:00 UTC
     - cron: '0 8 * * 1'
-  workflow_dispatch: # Permet d'exécuter le script manuellement depuis GitHub si besoin
+  workflow_dispatch:
     inputs:
       week_override:
         description: 'Override ISO week number (e.g. 33)'
@@ -21,6 +16,10 @@ on:
         default: 'false'
         type: boolean
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   publish-study:
     name: Generate + Publish Weekly Study
@@ -28,56 +27,42 @@ jobs:
 
     steps:
     - name: Checkout du projet
-      uses: actions/checkout@a2d1cbb0c7eab3e3e9e955f1e6e5f4a0b0c0d0e0 # v4.2.2
+      uses: actions/checkout@v4
       with:
         persist-credentials: true
 
-    - name: Installation de Python 3.11
-      uses: actions/setup-python@115c3a09f4103a3c4eda0c6170dcb611e3d28 # v5.7.0
-      with:
-        python-version: '3.11'
-        cache: 'pip'
-        cache-dependency-path: requirements.txt
-
-    - name: Create virtual environment
-      run: |
-        python -m venv .venv
-        echo ".venv" >> $GITHUB_PATH
-
-    - name: Install dependencies
-      run: |
-        .venv/bin/python -m pip install --upgrade pip
-        .venv/bin/pip install -r requirements.txt
-
-    - name: Génération et Publication automatique
+    - name: Génération des 3 sujets (maroc, france, hybrid)
       env:
-        OPENAI_API_KEY: ${{ secrets.HERMES_LLM_API_KEY }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
         WEEK_OVERRIDE: ${{ github.event.inputs.week_override || '' }}
       run: |
-        .venv/bin/python scripts/publish_study.py
+        python scripts/publish_study.py
 
-    - name: Validate output JSON
+    - name: Validate output files exist
       if: success()
       run: |
-        if [ -f data/trends.json ]; then
-          .venv/bin/python -c "import json; json.load(open('data/trends.json'))"
-          echo "✅ trends.json is valid"
-        else
-          echo "⚠️ trends.json not found"
-        fi
-
-    - name: Validate figures exist
-      if: success()
-      run: |
-        LATEST=$(ls -t projects/ | head -1)
-        echo "Latest project dir: $LATEST"
-        if [ -d "projects/$LATEST/figures" ]; then
-          COUNT=$(ls projects/$LATEST/figures/*.png 2>/dev/null | wc -l)
-          echo "Generated $COUNT figures"
-          if [ "$COUNT" -eq 0 ]; then
-            echo "::error::No figures were generated"
+        for topic in maroc france hybrid; do
+          LATEST=$(ls -td projects/${YEAR:-*}-W${WEEK_OVERRIDE:-*}-$topic 2>/dev/null | head -1)
+          if [ -z "$LATEST" ]; then
+            echo "::error::No project directory found for topic: $topic"
             exit 1
           fi
+          echo "✅ $topic: $LATEST"
+          if [ ! -f "$LATEST/index.html" ]; then
+            echo "::error::Missing index.html in $LATEST"
+            exit 1
+          fi
+          echo "   ✅ index.html present ($(wc -c < "$LATEST/index.html") bytes)"
+          if [ ! -f "$LATEST/README.md" ]; then
+            echo "::warning::Missing README.md in $LATEST (non-fatal)"
+          fi
+        done
+
+    - name: Validate Pages deploy workflow
+      run: |
+        if [ ! -f .github/workflows/pages.yml ]; then
+          echo "::error::pages.yml workflow missing"
+          exit 1
         fi
+        echo "✅ pages.yml present"
