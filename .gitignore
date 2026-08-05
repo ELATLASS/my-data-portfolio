@@ -1,40 +1,35 @@
-# Python
+# Dossiers et fichiers générés par le workflow
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-venv/
-.venv/
-venv.bak/
+*.pyc
 .env
-pip-log.txt
-pip-delete-this-directory.txt
+.venv/
+venv/
 
-# Distribution / packaging
+# Résultats de builds
 dist/
 build/
 *.egg-info/
-*.egg
 
-# Pytest
-.pytest_cache/
-.coverage
-htmlcov/
+# Fichiers temporaires
+*.tmp
+*.bak
+*.swp
+*~
 
-# Matplotlib / figures — allow PNG inside projects/*/figures/
-*.png
-!projects/*/figures/*.png
-
-# OS generated
+# OS
 .DS_Store
-._*
+Thumbs.db
 
 # IDE
 .vscode/
 .idea/
-*.swp
-*.swo
+*.sublime-workspace
+
+# Node (si jamais utilisé)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # GitHub
-.history/
+.github/workflows/*.log

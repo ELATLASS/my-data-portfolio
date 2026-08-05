@@ -31,6 +31,11 @@ jobs:
       with:
         persist-credentials: true
 
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+
     - name: Génération des 3 sujets (maroc, france, hybrid)
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -57,19 +62,16 @@ jobs:
           if [ ! -f "$LATEST/README.md" ]; then
             echo "::warning::Missing README.md in $LATEST (non-fatal)"
           fi
-          # Validate HTML contains Chart.js
           if ! grep -q "chart.js" "$LATEST/index.html"; then
             echo "::error::Missing Chart.js in $LATEST/index.html"
             exit 1
           fi
           echo "   ✅ Chart.js present"
-          # Validate HTML contains KPI cards
           if ! grep -q "kpi-row" "$LATEST/index.html"; then
             echo "::error::Missing KPI cards in $LATEST/index.html"
             exit 1
           fi
           echo "   ✅ KPI cards present"
-          # Validate HTML contains data table
           if ! grep -q "<table" "$LATEST/index.html"; then
             echo "::error::Missing data table in $LATEST/index.html"
             exit 1
@@ -95,3 +97,28 @@ jobs:
           exit 1
         fi
         echo "✅ pages.yml present"
+
+    - name: Commit and push generated files
+      if: success() && github.event.inputs.dry_run != 'true'
+      run: |
+        git config user.name "Hermes Agent"
+        git config user.email "elatlassiabdessamad@outlook.fr"
+        git add -A
+        git diff --cached --quiet && echo "No changes to commit" && exit 0
+        git commit -m "chore: weekly study publish $(date +%Y-%m-%d)"
+        git push origin main
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload Pages artifact
+      if: success()
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: .
+        retention-days: 1
+
+    - name: Notify on failure
+      if: failure()
+      run: |
+        echo "::error::Weekly study publish failed!"
+        exit 1
