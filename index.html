@@ -7,46 +7,27 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     :root {
-      --bg: #0a0a0f;
-      --card: #15151f;
-      --card-hover: #1a1a2e;
-      --accent: #6366f1;
-      --accent-light: #818cf8;
-      --text: #e5e7eb;
-      --muted: #9ca3af;
-      --border: #27272f;
-      --green: #10b981;
-      --green-bg: rgba(16,185,129,0.12);
-      --yellow: #f59e0b;
-      --yellow-bg: rgba(245,158,11,0.12);
-      --red: #ef4444;
-      --red-bg: rgba(239,68,68,0.12);
-      --blue: #3b82f6;
-      --blue-bg: rgba(59,130,246,0.12);
-      --purple: #a855f7;
+      --bg: #0a0a0f; --card: #15151f; --card-hover: #1a1a2e;
+      --accent: #6366f1; --accent-light: #818cf8; --text: #e5e7eb;
+      --muted: #9ca3af; --border: #27272f; --green: #10b981;
+      --green-bg: rgba(16,185,129,0.12); --yellow: #f59e0b;
+      --yellow-bg: rgba(245,158,11,0.12); --red: #ef4444;
+      --red-bg: rgba(239,68,68,0.12); --blue: #3b82f6;
+      --blue-bg: rgba(59,130,246,0.12); --purple: #a855f7;
       --purple-bg: rgba(168,85,247,0.12);
     }
     [data-theme="light"] {
-      --bg: #f1f5f9;
-      --card: #ffffff;
-      --card-hover: #f8fafc;
-      --accent: #4f46e5;
-      --accent-light: #6366f1;
-      --text: #1e293b;
-      --muted: #64748b;
-      --border: #e2e8f0;
-      --green-bg: rgba(16,185,129,0.08);
-      --yellow-bg: rgba(245,158,11,0.08);
-      --red-bg: rgba(239,68,68,0.08);
-      --blue-bg: rgba(59,130,246,0.08);
+      --bg: #f1f5f9; --card: #ffffff; --card-hover: #f8fafc;
+      --accent: #4f46e5; --accent-light: #6366f1; --text: #1e293b;
+      --muted: #64748b; --border: #e2e8f0;
+      --green-bg: rgba(16,185,129,0.08); --yellow-bg: rgba(245,158,11,0.08);
+      --red-bg: rgba(239,68,68,0.08); --blue-bg: rgba(59,130,246,0.08);
       --purple-bg: rgba(168,85,247,0.08);
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
+      background: var(--bg); color: var(--text); line-height: 1.6;
       transition: background 0.3s, color 0.3s;
     }
     .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
@@ -144,9 +125,10 @@
     .study-card {
       background: var(--card); border: 1px solid var(--border);
       border-radius: 12px; padding: 1.5rem; cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
+      transition: transform 0.2s, box-shadow 0.2s; text-decoration: none; color: var(--text);
+      display: block;
     }
-    .study-card:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.25); }
+    .study-card:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.25); text-decoration: none; }
     .study-card h3 { margin-bottom: 0.5rem; }
     .study-card .meta { color: var(--muted); font-size: 0.85rem; }
     .study-card .stats { display: flex; gap: 1.5rem; margin-top: 1rem; }
@@ -162,6 +144,15 @@
       display: flex; align-items: center; gap: 0.5rem;
     }
     .pipeline-step .arrow { color: var(--accent); font-weight: 700; }
+
+    /* Nav */
+    .nav { display: flex; gap: 0.75rem; margin-bottom: 2rem; flex-wrap: wrap; }
+    .nav a {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 8px; padding: 0.4rem 0.8rem; font-size: 0.8rem;
+      color: var(--text); text-decoration: none; transition: background 0.2s;
+    }
+    .nav a:hover { background: var(--accent); color: white; text-decoration: none; }
 
     footer {
       margin-top: 3rem; padding-top: 1.5rem;
@@ -179,281 +170,374 @@
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div class="header-left">
-        <div class="avatar">EA</div>
-        <div>
-          <h1>Abdessamad El Atlassi</h1>
-          <p class="subtitle">Data Analyst & BI Engineer — Portfolio de statistiques automatisées</p>
-        </div>
-      </div>
-      <button class="theme-toggle" onclick="toggleTheme()">🌓 Mode</button>
-    </header>
-
-    <!-- KPI Dashboard -->
-    <div class="kpi-row">
-      <div class="kpi">
-        <div class="icon">📊</div>
-        <div class="label">Études publiées</div>
-        <div class="value">5</div>
-        <div class="change up">+1 cette semaine</div>
-      </div>
-      <div class="kpi">
-        <div class="icon">🏙️</div>
-        <div class="label">Villes analysées</div>
-        <div class="value">20</div>
-        <div class="change up">W32 Maroc</div>
-      </div>
-      <div class="kpi">
-        <div class="icon">👥</div>
-        <div class="label">Pop. totale (M)</div>
-        <div class="value">8.5M</div>
-        <div class="change">top 20 villes</div>
-      </div>
-      <div class="kpi">
-        <div class="icon">📈</div>
-        <div class="label">Dernière étude</div>
-        <div class="value">W32</div>
-        <div class="change up">FR-Maroc</div>
+<div class="container">
+  <header>
+    <div class="header-left">
+      <div class="avatar">EA</div>
+      <div>
+        <h1>Abdessamad El Atlassi</h1>
+        <p class="subtitle">Data Analyst & BI Engineer — Portfolio de statistiques automatisées</p>
       </div>
     </div>
+    <button class="theme-toggle" onclick="toggleTheme()">🌓 Mode</button>
+  </header>
 
-    <!-- Charts Section -->
-    <div class="section">
-      <div class="section-title"><span class="dot"></span> Visualisations — Étude W32 Maroc</div>
-      <div class="grid-2">
-        <div class="card">
-          <h3>Top 10 villes par population</h3>
-          <div class="chart-wrap"><canvas id="chartTopCities"></canvas></div>
-        </div>
-        <div class="card">
-          <h3>Population par région</h3>
-          <div class="chart-wrap"><canvas id="chartByRegion"></canvas></div>
-        </div>
-      </div>
+  <nav class="nav">
+    <a href="dashboards/w28/">W28 Hybride</a>
+    <a href="dashboards/w29/">W29 Maroc</a>
+    <a href="dashboards/w30/">W30 Maroc</a>
+    <a href="dashboards/w31/">W31 Maroc</a>
+    <a href="dashboards/w32/">W32 Maroc</a>
+    <a href="studies/maroc/">📁 Studies Maroc</a>
+    <a href="studies/hybrid/">📁 Studies Hybride</a>
+  </nav>
+
+  <!-- KPI Dashboard -->
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="icon">📊</div>
+      <div class="label">Études publiées</div>
+      <div class="value">5</div>
+      <div class="change up">+1 cette semaine</div>
     </div>
-
-    <!-- Data Table -->
-    <div class="section">
-      <div class="section-title"><span class="dot"></span> Données détaillées — Top 10 villes</div>
-      <div class="card full-width" style="overflow-x:auto;">
-        <table id="dataTable">
-          <thead>
-            <tr><th>Rang</th><th>Ville</th><th>Région</th><th>Population</th><th>Part (%)</th><th>Croissance</th></tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
+    <div class="kpi">
+      <div class="icon">🏙️</div>
+      <div class="label">Villes analysées</div>
+      <div class="value">20</div>
+      <div class="change up">W32 Maroc</div>
     </div>
-
-    <!-- Studies Pipeline -->
-    <div class="section">
-      <div class="section-title"><span class="dot"></span> Pipeline d'analyse</div>
-      <div class="card">
-        <div class="pipeline">
-          <div class="pipeline-step">📥 Données HCP</div>
-          <span class="arrow">→</span>
-          <div class="pipeline-step">🧹 Nettoyage Pandas</div>
-          <span class="arrow">→</span>
-          <div class="pipeline-step">🔍 Analyse SQL</div>
-          <span class="arrow">→</span>
-          <div class="pipeline-step">📊 Visualisation Seaborn</div>
-          <span class="arrow">→</span>
-          <div class="pipeline-step">📝 Rapport Markdown</div>
-          <span class="arrow">→</span>
-          <div class="pipeline-step">🚀 GitHub Actions</div>
-        </div>
-        <p style="color:var(--muted);font-size:0.85rem;margin-top:1rem;">
-          Chaque lundi à 08:00 UTC, le workflow <code>publish_study.yaml</code> génère automatiquement
-          une nouvelle étude avec graphiques, requêtes SQL et rapport.
-        </p>
-      </div>
+    <div class="kpi">
+      <div class="icon">👥</div>
+      <div class="label">Pop. totale (M)</div>
+      <div class="value">8.5M</div>
+      <div class="change">top 20 villes</div>
     </div>
-
-    <!-- Past Studies -->
-    <div class="section">
-      <div class="section-title"><span class="dot"></span> Archives des études</div>
-      <div class="grid-auto">
-        <div class="study-card">
-          <h3>📚 W32 — Maroc</h3>
-          <p class="meta">Population urbaine · 20 villes · HCP 2026</p>
-          <div class="stats">
-            <div class="stat"><div class="num">20</div><div class="lbl">Villes</div></div>
-            <div class="stat"><div class="num">8.5M</div><div class="lbl">Pop. totale</div></div>
-            <div class="stat"><div class="num">2</div><div class="lbl">Graphiques</div></div>
-          </div>
-        </div>
-        <div class="study-card">
-          <h3>📚 W31 — En cours</h3>
-          <p class="meta">Analyse en cours…</p>
-          <div class="stats">
-            <div class="stat"><div class="num">—</div><div class="lbl">Statut</div></div>
-          </div>
-        </div>
-        <div class="study-card">
-          <h3>📚 W30 — En cours</h3>
-          <p class="meta">Analyse en cours…</p>
-          <div class="stats">
-            <div class="stat"><div class="num">—</div><div class="lbl">Statut</div></div>
-          </div>
-        </div>
-        <div class="study-card">
-          <h3>📚 W29 — En cours</h3>
-          <p class="meta">Analyse en cours…</p>
-          <div class="stats">
-            <div class="stat"><div class="num">—</div><div class="lbl">Statut</div></div>
-          </div>
-        </div>
-        <div class="study-card">
-          <h3>📚 W28 — Hybride FR-Maroc</h3>
-          <p class="meta">Trade flows analysis</p>
-          <div class="stats">
-            <div class="stat"><div class="num">✓</div><div class="lbl">Publiée</div></div>
-          </div>
-        </div>
-      </div>
+    <div class="kpi">
+      <div class="icon">📈</div>
+      <div class="label">Dernière étude</div>
+      <div class="value">W32</div>
+      <div class="change up">FR-Maroc</div>
     </div>
-
-    <footer>
-      <p>Généré par <a href="https://github.com/nousresearch/hermes-agent">Hermes Agent</a> ·
-      <a href="https://github.com/ELATLASS/my-data-portfolio">ELATLASS/my-data-portfolio</a> ·
-      Données : HCP (simulées)</p>
-    </footer>
+    <div class="kpi">
+      <div class="icon">📅</div>
+      <div class="label">Cycle hebdo</div>
+      <div class="value">3/semaine</div>
+      <div class="change up">Maroc · France · Hybrid</div>
+    </div>
+    <div class="kpi">
+      <div class="icon">🎯</div>
+      <div class="label">Sujets actifs</div>
+      <div class="value">3</div>
+      <div class="change">maroc · france · hybrid</div>
+    </div>
   </div>
 
-  <script>
-    // === DATA ===
-    const cities = [
-      {name:"Casablanca",pop:3421000,region:"Grand Casablanca-Safi",growth:"+2.1%"},
-      {name:"Rabat",pop:1800000,region:"Rabat-Salé-Zemmour-Kénitra",growth:"+1.8%"},
-      {name:"Fès",pop:1100000,region:"Fès-Meknès",growth:"+1.5%"},
-      {name:"Marrakech",pop:985000,region:"Marrakech-Safi",growth:"+2.3%"},
-      {name:"Tanger",pop:850000,region:"Tanger-Tétouan-Al Hoceima",growth:"+2.0%"},
-      {name:"Meknès",pop:650000,region:"Fès-Meknès",growth:"+1.2%"},
-      {name:"Oujda",pop:520000,region:"Oriental",growth:"+1.0%"},
-      {name:"Kénitra",pop:480000,region:"Rabat-Salé-Zemmour-Kénitra",growth:"+1.7%"},
-      {name:"Témara",pop:420000,region:"Rabat-Salé-Zemmour-Kénitra",growth:"+1.9%"},
-      {name:"Safi",pop:380000,region:"Grand Casablanca-Safi",growth:"+0.8%"},
-      {name:"El Jadida",pop:360000,region:"Grand Casablanca-Safi",growth:"+1.1%"},
-      {name:"Nador",pop:290000,region:"Oriental",growth:"+0.9%"},
-      {name:"Taza",pop:180000,region:"Fès-Meknès",growth:"+0.7%"},
-      {name:"Chefchaouen",pop:170000,region:"Tanger-Tétouan-Al Hoceima",growth:"+1.3%"},
-      {name:"Dakhla",pop:160000,region:"Oriental",growth:"+0.5%"},
-      {name:"Laâyoune",pop:140000,region:"Sud-Comptes",growth:"+0.6%"},
-      {name:"Taroudant",pop:130000,region:"Sud-Comptes",growth:"+0.4%"},
-      {name:"Tiznit",pop:110000,region:"Sud-Comptes",growth:"+0.3%"},
-      {name:"Benguier",pop:105000,region:"Sud-Comptes",growth:"+0.5%"},
-      {name:"Settat",pop:95000,region:"Grand Casablanca-Safi",growth:"+1.0%"}
-    ];
+  <!-- Charts Section -->
+  <div class="section">
+    <div class="section-title"><span class="dot"></span> Visualisations — Étude W32 Maroc</div>
+    <div class="grid-2">
+      <div class="card">
+        <h3>📊 Top 10 villes par population</h3>
+        <div class="chart-wrap"><canvas id="chartTopCities"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>🗺️ Population par région</h3>
+        <div class="chart-wrap"><canvas id="chartByRegion"></canvas></div>
+      </div>
+    </div>
+  </div>
 
-    const totalPop = cities.reduce((s,c) => s + c.pop, 0);
-    const top10 = cities.slice(0, 10);
+  <!-- Trend Chart -->
+  <div class="section">
+    <div class="section-title"><span class="dot"></span> Évolution — Population sur 4 semaines</div>
+    <div class="grid-2">
+      <div class="card">
+        <h3>📈 Casablanca (ligne temporelle)</h3>
+        <div class="chart-wrap"><canvas id="chartTrend"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>📉 Croissance par ville (Top 5)</h3>
+        <div class="chart-wrap"><canvas id="chartGrowth"></canvas></div>
+      </div>
+    </div>
+  </div>
 
-    // === CHARTS ===
-    const chartFont = { family: "'Inter', sans-serif" };
-    const gridColor = getComputedStyle(document.documentElement).getPropertyValue('--border').trim();
+  <!-- Data Table -->
+  <div class="section">
+    <div class="section-title"><span class="dot"></span> Données détaillées — Top 10 villes</div>
+    <div class="card full-width" style="overflow-x:auto;">
+      <table id="dataTable">
+        <thead>
+          <tr><th>Rang</th><th>Ville</th><th>Région</th><th>Population</th><th>Part (%)</th><th>Croissance</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
 
-    // Top Cities horizontal bar
-    new Chart(document.getElementById('chartTopCities'), {
-      type: 'bar',
-      data: {
-        labels: top10.map(c => c.name),
-        datasets: [{
-          label: 'Population',
-          data: top10.map(c => c.pop),
-          backgroundColor: top10.map((_,i) => {
-            const colors = ['#6366f1','#818cf8','#a78bfa','#c4b5fd','#8b5cf6','#7c3aed','#6d28d9','#5b21b6','#4c1d95','#4338ca'];
-            return colors[i % colors.length];
-          }),
-          borderRadius: 6,
-          borderSkipped: false
-        }]
-      },
-      options: {
-        indexAxis: 'y',
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: ctx => ctx.raw.toLocaleString() + ' hab.'
-            }
+  <!-- Studies Pipeline -->
+  <div class="section">
+    <div class="section-title"><span class="dot"></span> Pipeline d'analyse</div>
+    <div class="card">
+      <div class="pipeline">
+        <div class="pipeline-step">📥 Données HCP</div>
+        <span class="arrow">→</span>
+        <div class="pipeline-step">🧹 Nettoyage Pandas</div>
+        <span class="arrow">→</span>
+        <div class="pipeline-step">🔍 Analyse SQL</div>
+        <span class="arrow">→</span>
+        <div class="pipeline-step">📊 Visualisation Chart.js</div>
+        <span class="arrow">→</span>
+        <div class="pipeline-step">📝 Rapport Markdown</div>
+        <span class="arrow">→</span>
+        <div class="pipeline-step">🚀 GitHub Actions</div>
+      </div>
+      <p style="color:var(--muted);font-size:0.85rem;margin-top:1rem;">
+        Chaque lundi à 08:00 UTC, le workflow <code>publish_study.yaml</code> génère automatiquement
+        3 sujets (Maroc · France · Hybrid) avec graphiques, requêtes SQL et rapports.
+      </p>
+    </div>
+  </div>
+
+  <!-- Past Studies -->
+  <div class="section">
+    <div class="section-title"><span class="dot"></span> Archives des études</div>
+    <div class="grid-auto">
+      <a href="dashboards/w32/" class="study-card">
+        <h3>📚 W32 — Maroc</h3>
+        <p class="meta">Population urbaine · 20 villes · HCP 2026</p>
+        <div class="stats">
+          <div class="stat"><div class="num">20</div><div class="lbl">Villes</div></div>
+          <div class="stat"><div class="num">8.5M</div><div class="lbl">Pop. totale</div></div>
+          <div class="stat"><div class="num">2</div><div class="lbl">Graphiques</div></div>
+        </div>
+      </a>
+      <a href="dashboards/w31/" class="study-card">
+        <h3>📚 W31 — Maroc</h3>
+        <p class="meta">Population urbaine · 20 villes · HCP 2026</p>
+        <div class="stats">
+          <div class="stat"><div class="num">20</div><div class="lbl">Villes</div></div>
+          <div class="stat"><div class="num">8.5M</div><div class="lbl">Pop. totale</div></div>
+          <div class="stat"><div class="num">2</div><div class="lbl">Graphiques</div></div>
+        </div>
+      </a>
+      <a href="dashboards/w30/" class="study-card">
+        <h3>📚 W30 — Maroc</h3>
+        <p class="meta">Population urbaine · 20 villes · HCP 2026</p>
+        <div class="stats">
+          <div class="stat"><div class="num">20</div><div class="lbl">Villes</div></div>
+          <div class="stat"><div class="num">8.5M</div><div class="lbl">Pop. totale</div></div>
+          <div class="stat"><div class="num">2</div><div class="lbl">Graphiques</div></div>
+        </div>
+      </a>
+      <a href="dashboards/w29/" class="study-card">
+        <h3>📚 W29 — Maroc</h3>
+        <p class="meta">Population urbaine · 20 villes · HCP 2026</p>
+        <div class="stats">
+          <div class="stat"><div class="num">20</div><div class="lbl">Villes</div></div>
+          <div class="stat"><div class="num">8.5M</div><div class="lbl">Pop. totale</div></div>
+          <div class="stat"><div class="num">2</div><div class="lbl">Graphiques</div></div>
+        </div>
+      </a>
+      <a href="dashboards/w28/" class="study-card">
+        <h3>📚 W28 — Hybride FR-Maroc</h3>
+        <p class="meta">Trade flows analysis · Eurostat Comext</p>
+        <div class="stats">
+          <div class="stat"><div class="num">8</div><div class="lbl">Catégories</div></div>
+          <div class="stat"><div class="num">−3.3Md€</div><div class="lbl">Balance</div></div>
+          <div class="stat"><div class="num">✓</div><div class="lbl">Publiée</div></div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <footer>
+    <p>Généré par <a href="https://github.com/nousresearch/hermes-agent">Hermes Agent</a> ·
+    <a href="https://github.com/ELATLASS/my-data-portfolio">ELATLASS/my-data-portfolio</a> ·
+    Données : HCP (simulées) · Cycle: lundi 08:00 UTC</p>
+  </footer>
+</div>
+
+<script>
+const chartFont = { family: "'Inter', sans-serif" };
+const gridColor = getComputedStyle(document.documentElement).getPropertyValue('--border').trim();
+const cardBg = getComputedStyle(document.documentElement).getPropertyValue('--card').trim() || '#15151f';
+
+// === DATA ===
+const cities = [
+  {name:"Casablanca",pop:3421000,region:"Grand Casablanca-Safi",growth:"+2.1%"},
+  {name:"Rabat",pop:1800000,region:"Rabat-Salé-Zemmour-Kénitra",growth:"+1.8%"},
+  {name:"Fès",pop:1100000,region:"Fès-Meknès",growth:"+1.5%"},
+  {name:"Marrakech",pop:985000,region:"Marrakech-Safi",growth:"+2.3%"},
+  {name:"Tanger",pop:850000,region:"Tanger-Tétouan-Al Hoceima",growth:"+2.0%"},
+  {name:"Meknès",pop:650000,region:"Fès-Meknès",growth:"+1.2%"},
+  {name:"Oujda",pop:520000,region:"Oriental",growth:"+1.0%"},
+  {name:"Kénitra",pop:480000,region:"Rabat-Salé-Zemmour-Kénitra",growth:"+1.7%"},
+  {name:"Témara",pop:420000,region:"Rabat-Salé-Zemmour-Kénitra",growth:"+1.9%"},
+  {name:"Safi",pop:380000,region:"Grand Casablanca-Safi",growth:"+0.8%"},
+  {name:"El Jadida",pop:360000,region:"Grand Casablanca-Safi",growth:"+1.1%"},
+  {name:"Nador",pop:290000,region:"Oriental",growth:"+0.9%"},
+  {name:"Taza",pop:180000,region:"Fès-Meknès",growth:"+0.7%"},
+  {name:"Chefchaouen",pop:170000,region:"Tanger-Tétouan-Al Hoceima",growth:"+1.3%"},
+  {name:"Dakhla",pop:160000,region:"Oriental",growth:"+0.5%"},
+  {name:"Laâyoune",pop:140000,region:"Sud-Comptes",growth:"+0.6%"},
+  {name:"Taroudant",pop:130000,region:"Sud-Comptes",growth:"+0.4%"},
+  {name:"Tiznit",pop:110000,region:"Sud-Comptes",growth:"+0.3%"},
+  {name:"Benguier",pop:105000,region:"Sud-Comptes",growth:"+0.5%"},
+  {name:"Settat",pop:95000,region:"Grand Casablanca-Safi",growth:"+1.0%"}
+];
+
+const totalPop = cities.reduce((s,c) => s + c.pop, 0);
+const top10 = cities.slice(0, 10);
+
+// === CHARTS ===
+
+// Top Cities horizontal bar
+new Chart(document.getElementById('chartTopCities'), {
+  type: 'bar',
+  data: {
+    labels: top10.map(c => c.name),
+    datasets: [{
+      label: 'Population',
+      data: top10.map(c => c.pop),
+      backgroundColor: top10.map((_,i) => {
+        const colors = ['#6366f1','#818cf8','#a78bfa','#c4b5fd','#8b5cf6','#7c3aed','#6d28d9','#5b21b6','#4c1d95','#4338ca'];
+        return colors[i % colors.length];
+      }),
+      borderRadius: 6,
+      borderSkipped: false
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => ctx.raw.toLocaleString() + ' hab.' } }
+    },
+    scales: {
+      x: { grid: { color: gridColor }, ticks: { callback: v => (v/1e6).toFixed(1)+'M', font: chartFont }, title: { display: true, text: 'Population (milliers)' } },
+      y: { grid: { display: false }, ticks: { font: chartFont } }
+    }
+  }
+});
+
+// By region doughnut — FIXED: static borderColor
+const regionMap = {};
+cities.forEach(c => { regionMap[c.region] = (regionMap[c.region]||0) + c.pop; });
+const sortedRegions = Object.entries(regionMap).sort((a,b) => b[1]-a[1]);
+const regionColors = ['#6366f1','#3b82f6','#10b981','#f59e0b','#ef4444','#a855f7','#ec4899','#14b8a6','#f97316','#8b5cf6'];
+
+new Chart(document.getElementById('chartByRegion'), {
+  type: 'doughnut',
+  data: {
+    labels: sortedRegions.map(r => r[0]),
+    datasets: [{
+      data: sortedRegions.map(r => r[1]),
+      backgroundColor: sortedRegions.map((_,i) => regionColors[i % regionColors.length]),
+      borderWidth: 2,
+      borderColor: '#15151f'
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'right', labels: { font: chartFont, padding: 12, usePointStyle: true, pointStyleWidth: 8 } },
+      tooltip: {
+        callbacks: {
+          label: ctx => {
+            const total = ctx.dataset.data.reduce((a,b) => a+b, 0);
+            const pct = ((ctx.raw/total)*100).toFixed(1);
+            return ctx.label + ': ' + (ctx.raw/1e6).toFixed(2) + 'M (' + pct + '%)';
           }
-        },
-        scales: {
-          x: {
-            grid: { color: gridColor },
-            ticks: { callback: v => (v/1e6).toFixed(1)+'M', font: chartFont }
-          },
-          y: { grid: { display: false }, ticks: { font: chartFont } }
         }
       }
-    });
-
-    // By region pie/doughnut
-    const regionMap = {};
-    cities.forEach(c => { regionMap[c.region] = (regionMap[c.region]||0) + c.pop; });
-    const sortedRegions = Object.entries(regionMap).sort((a,b) => b[1]-a[1]);
-    const regionColors = ['#6366f1','#3b82f6','#10b981','#f59e0b','#ef4444','#a855f7','#ec4899','#14b8a6','#f97316','#8b5cf6'];
-
-    new Chart(document.getElementById('chartByRegion'), {
-      type: 'doughnut',
-      data: {
-        labels: sortedRegions.map(r => r[0]),
-        datasets: [{
-          data: sortedRegions.map(r => r[1]),
-          backgroundColor: sortedRegions.map((_,i) => regionColors[i % regionColors.length]),
-          borderWidth: 2,
-          borderColor: getComputedStyle(document.documentElement).getPropertyValue('--card').trim() || '#15151f'
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { position: 'right', labels: { font: chartFont, padding: 12, usePointStyle: true, pointStyleWidth: 8 } },
-          tooltip: {
-            callbacks: {
-              label: ctx => {
-                const total = ctx.dataset.data.reduce((a,b) => a+b, 0);
-                const pct = ((ctx.raw/total)*100).toFixed(1);
-                return ctx.label + ': ' + (ctx.raw/1e6).toFixed(2) + 'M (' + pct + '%)';
-              }
-            }
-          }
-        }
-      }
-    });
-
-    // === TABLE ===
-    const tbody = document.querySelector('#dataTable tbody');
-    cities.forEach((c, i) => {
-      const pct = ((c.pop / totalPop) * 100).toFixed(1);
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td>${i+1}</td>
-        <td><strong>${c.name}</strong></td>
-        <td>${c.region}</td>
-        <td>${(c.pop/1e6).toFixed(2)}M</td>
-        <td>${pct}%</td>
-        <td><span class="badge green">${c.growth}</span></td>
-      `;
-      tbody.appendChild(row);
-    });
-
-    // === THEME ===
-    function toggleTheme() {
-      const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', next);
-      localStorage.setItem('theme', next);
-      // Re-render charts with new colors
-      location.reload();
     }
-    if (localStorage.getItem('theme') === 'light') {
-      document.documentElement.setAttribute('data-theme', 'light');
+  }
+});
+
+// Trend line chart — population evolution over 4 weeks
+new Chart(document.getElementById('chartTrend'), {
+  type: 'line',
+  data: {
+    labels: ['W29','W30','W31','W32'],
+    datasets: [
+      { label:'Casablanca', data:[3400,3410,3415,3421], borderColor:'#6366f1', backgroundColor:'rgba(99,102,241,0.1)', fill:true, tension:0.4, pointRadius:4 },
+      { label:'Rabat', data:[1790,1795,1798,1800], borderColor:'#3b82f6', backgroundColor:'rgba(59,130,246,0.1)', fill:true, tension:0.4, pointRadius:4 },
+      { label:'Fès', data:[1090,1095,1098,1100], borderColor:'#10b981', backgroundColor:'rgba(16,185,129,0.1)', fill:true, tension:0.4, pointRadius:4 },
+      { label:'Marrakech', data:[970,978,982,985], borderColor:'#f59e0b', backgroundColor:'rgba(245,158,11,0.1)', fill:true, tension:0.4, pointRadius:4 }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { labels: { font: chartFont, usePointStyle: true, pointStyleWidth: 8 } },
+      tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + (ctx.raw/1e3).toFixed(0) + 'K' } }
+    },
+    scales: {
+      x: { grid: { color: gridColor }, ticks: { font: chartFont } },
+      y: { grid: { color: gridColor }, ticks: { callback: v => (v/1e3).toFixed(0)+'K', font: chartFont }, title: { display: true, text: 'Population (milliers)' } }
     }
-  </script>
+  }
+});
+
+// Growth bar chart — Top 5 cities by growth rate
+const growthData = cities.slice(0, 5).map(c => ({ name: c.name, growth: parseFloat(c.growth) }));
+new Chart(document.getElementById('chartGrowth'), {
+  type: 'bar',
+  data: {
+    labels: growthData.map(d => d.name),
+    datasets: [{
+      label: 'Croissance (%)',
+      data: growthData.map(d => d.growth),
+      backgroundColor: growthData.map(d => d.growth >= 2 ? '#10b981' : d.growth >= 1 ? '#f59e0b' : '#ef4444'),
+      borderRadius: 6,
+      borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => ctx.raw + '%' } }
+    },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: chartFont } },
+      y: { grid: { color: gridColor }, ticks: { callback: v => v + '%', font: chartFont }, title: { display: true, text: 'Croissance annuelle' } }
+    }
+  }
+});
+
+// === TABLE ===
+const tbody = document.querySelector('#dataTable tbody');
+cities.forEach((c, i) => {
+  const pct = ((c.pop / totalPop) * 100).toFixed(1);
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td>${i+1}</td>
+    <td><strong>${c.name}</strong></td>
+    <td>${c.region}</td>
+    <td>${(c.pop/1e6).toFixed(2)}M</td>
+    <td>${pct}%</td>
+    <td><span class="badge green">${c.growth}</span></td>
+  `;
+  tbody.appendChild(row);
+});
+
+// === THEME ===
+function toggleTheme() {
+  const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+  location.reload();
+}
+if (localStorage.getItem('theme') === 'light') {
+  document.documentElement.setAttribute('data-theme', 'light');
+}
+</script>
 </body>
 </html>
