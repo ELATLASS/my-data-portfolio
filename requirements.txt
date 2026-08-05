@@ -1,7 +1,0 @@
-# requirements.txt — minimal deps for publish_study.py
-# No external deps needed for static HTML dashboard generation.
-# Charts are rendered client-side via Chart.js CDN.
-# matplotlib/seaborn removed — figures are now HTML/JS based.
-
-# Keep empty or remove this file entirely.
-# If you add Python dependencies later, list them here.
