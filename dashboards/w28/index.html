@@ -6,80 +6,126 @@
   <title>W28 — Échanges FR↔MA | Dashboard</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
-    :root { --bg:#0a0a0f; --card:#15151f; --accent:#6366f1; --text:#e5e7eb; --muted:#9ca3af; --border:#27272f; --green:#10b981; --yellow:#f59e0b; --red:#ef4444; --blue:#3b82f6; --purple:#a855f7; }
-    [data-theme="light"] { --bg:#f1f5f9; --card:#ffffff; --text:#1e293b; --muted:#64748b; --border:#e2e8f0; }
+    :root { --bg:#0a0a0f; --card:#15151f; --card-hover:#1a1a2e; --accent:#6366f1; --accent-light:#818cf8; --text:#e5e7eb; --muted:#9ca3af; --border:#27272f; --green:#10b981; --green-bg:rgba(16,185,129,0.12); --yellow:#f59e0b; --yellow-bg:rgba(245,158,11,0.12); --red:#ef4444; --red-bg:rgba(239,68,68,0.12); --blue:#3b82f6; --blue-bg:rgba(59,130,246,0.12); --purple:#a855f7; --purple-bg:rgba(168,85,247,0.12); }
+    [data-theme="light"] { --bg:#f1f5f9; --card:#ffffff; --card-hover:#f8fafc; --accent:#4f46e5; --accent-light:#6366f1; --text:#1e293b; --muted:#64748b; --border:#e2e8f0; --green-bg:rgba(16,185,129,0.08); --yellow-bg:rgba(245,158,11,0.08); --red-bg:rgba(239,68,68,0.08); --blue-bg:rgba(59,130,246,0.08); --purple-bg:rgba(168,85,247,0.08); }
     * { margin:0; padding:0; box-sizing:border-box; }
     body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); line-height:1.6; transition:background .3s,color .3s; }
     .container { max-width:1400px; margin:0 auto; padding:2rem; }
     header { display:flex; align-items:center; justify-content:space-between; gap:2rem; padding:1.5rem 0; border-bottom:1px solid var(--border); margin-bottom:2rem; }
+    .header-left { display:flex; align-items:center; gap:1.5rem; }
+    .avatar { width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--purple)); display:flex; align-items:center; justify-content:center; font-size:1.5rem; font-weight:700; color:white; flex-shrink:0; }
     h1 { font-size:1.75rem; font-weight:700; }
     .subtitle { color:var(--muted); font-size:0.9rem; margin-top:0.25rem; }
     .theme-toggle { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:0.4rem 0.8rem; cursor:pointer; color:var(--text); font-size:0.8rem; }
+    .theme-toggle:hover { background:var(--card-hover); }
     .kpi-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem; margin-bottom:2rem; }
-    .kpi { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.25rem; }
+    .kpi { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.25rem; transition:transform .2s,box-shadow .2s; }
+    .kpi:hover { transform:translateY(-2px); box-shadow:0 4px 20px rgba(0,0,0,0.2); }
     .kpi .label { color:var(--muted); font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em; }
     .kpi .value { font-size:1.75rem; font-weight:700; margin:0.25rem 0; }
     .kpi .change { font-size:0.78rem; font-weight:600; }
     .kpi .change.up { color:var(--green); }
     .kpi .change.down { color:var(--red); }
+    .kpi .icon { font-size:1.5rem; margin-bottom:0.25rem; }
+    .section { margin-bottom:2.5rem; }
+    .section-title { font-size:1.25rem; font-weight:600; margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem; }
+    .section-title .dot { width:8px; height:8px; border-radius:50%; background:var(--accent); }
     .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem; }
-    .card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.5rem; }
+    .grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:1.5rem; }
+    .card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.5rem; transition:transform .2s,box-shadow .2s; }
+    .card:hover { transform:translateY(-1px); box-shadow:0 4px 16px rgba(0,0,0,0.15); }
     .card h3 { color:var(--accent); margin-bottom:0.75rem; font-size:1rem; }
-    .chart-wrap { position:relative; width:100%; height:320px; }
+    .card.full-width { grid-column:1 / -1; }
+    .chart-wrap { position:relative; width:100%; height:300px; }
     .chart-wrap canvas { width:100%!important; height:100%!important; }
     table { width:100%; border-collapse:collapse; font-size:0.85rem; }
     th,td { padding:0.5rem 0.75rem; text-align:left; border-bottom:1px solid var(--border); }
     th { color:var(--muted); font-weight:600; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.04em; }
-    tr:hover td { background:var(--card); }
+    tr:hover td { background:var(--card-hover); }
     .badge { display:inline-block; padding:0.15rem 0.5rem; border-radius:999px; font-size:0.7rem; font-weight:600; }
-    .badge.deficit { background:rgba(239,68,68,0.12); color:var(--red); }
-    .badge.surplus { background:rgba(16,185,129,0.12); color:var(--green); }
-    .badge.info { background:rgba(59,130,246,0.12); color:var(--blue); }
-    .badge.purple { background:rgba(168,85,247,0.12); color:var(--purple); }
+    .badge.green { background:var(--green-bg); color:var(--green); }
+    .badge.deficit { background:var(--red-bg); color:var(--red); }
+    .badge.surplus { background:var(--green-bg); color:var(--green); }
+    .badge.blue { background:var(--blue-bg); color:var(--blue); }
+    .badge.purple { background:var(--purple-bg); color:var(--purple); }
     .insight { padding:1rem; border-left:3px solid var(--accent); background:var(--card); border-radius:0 8px 8px 0; margin:1rem 0; }
     .insight strong { color:var(--accent); }
     .nav { display:flex; gap:0.75rem; margin-bottom:2rem; flex-wrap:wrap; }
     .nav a { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:0.4rem 0.8rem; font-size:0.8rem; color:var(--text); text-decoration:none; transition:background .2s; }
-    .nav a:hover { background:var(--accent); color:white; }
-    .nav a.active { background:var(--accent); color:white; }
-    footer { margin-top:3rem; padding-top:1rem; border-top:1px solid var(--border); text-align:center; color:var(--muted); font-size:0.78rem; }
-    @media(max-width:768px) { .grid-2 { grid-template-columns:1fr; } .kpi-row { grid-template-columns:repeat(2,1fr); } }
+    .nav a:hover { background:var(--accent); color:white; text-decoration:none; }
+    .study-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.5rem; cursor:pointer; transition:transform .2s,box-shadow .2s; text-decoration:none; color:var(--text); display:block; }
+    .study-card:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(0,0,0,0.25); text-decoration:none; }
+    .study-card h3 { margin-bottom:0.5rem; }
+    .study-card .meta { color:var(--muted); font-size:0.85rem; }
+    .study-card .stats { display:flex; gap:1.5rem; margin-top:1rem; }
+    .study-card .stat { text-align:center; }
+    .study-card .stat .num { font-size:1.25rem; font-weight:700; color:var(--accent); }
+    .study-card .stat .lbl { font-size:0.75rem; color:var(--muted); }
+    .pipeline { display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap; margin:1rem 0; }
+    .pipeline-step { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:0.5rem 1rem; font-size:0.85rem; display:flex; align-items:center; gap:0.5rem; }
+    .pipeline-step .arrow { color:var(--accent); font-weight:700; }
+    footer { margin-top:3rem; padding-top:1.5rem; border-top:1px solid var(--border); text-align:center; color:var(--muted); font-size:0.8rem; }
+    a { color:var(--accent); text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    @media(max-width:768px) { .grid-2,.grid-3 { grid-template-columns:1fr; } .kpi-row { grid-template-columns:repeat(2,1fr); } }
   </style>
 </head>
 <body>
 <div class="container">
   <header>
-    <div>
-      <h1>📊 W28 — Échanges FR↔MA (Hybride)</h1>
-      <p class="subtitle">Semaine 28 · 2026 · Flux commerciaux France ↔ Maroc · Eurostat Comext + HCP</p>
+    <div class="header-left">
+      <div class="avatar">EA</div>
+      <div>
+        <h1>Abdessamad El Atlassi</h1>
+        <p class="subtitle">Data Analyst & BI Engineer — Portfolio de statistiques automatisées</p>
+      </div>
     </div>
-    <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+    <button class="theme-toggle" onclick="toggleTheme()">🌓 Mode</button>
   </header>
 
   <nav class="nav">
-    <a href="../index.html">🏠 Dashboard principal</a>
-    <a href="w29/index.html">W29 →</a>
-    <a href="w30/index.html">W30 →</a>
-    <a href="w31/index.html">W31 →</a>
-    <a href="w32/index.html">W32 →</a>
+    <a href="../index.html">🏠 Principal</a>
+    <a href="../w29/">W29 →</a>
+    <a href="../w30/">W30 →</a>
+    <a href="../w31/">W31 →</a>
+    <a href="../w32/">W32 →</a>
+    <a href="../../studies/hybrid/">📁 Source</a>
   </nav>
 
   <div class="kpi-row">
-    <div class="kpi"><div class="label">Balance commerciale</div><div class="value" style="color:var(--red)">−3.3 Md€</div><div class="change down">Déficit électronique</div></div>
-    <div class="kpi"><div class="label">Export total</div><div class="value">6.8 Md€</div><div class="change up">Métaux dominants</div></div>
-    <div class="kpi"><div class="label">Import total</div><div class="value">10.1 Md€</div><div class="change">Agricole + électronique</div></div>
-    <div class="kpi"><div class="label">Régions clés</div><div class="value">4</div><div class="change info">Casablanca + Tanger = 55%</div></div>
-    <div class="kpi"><div class="label">Catégories</div><div class="value">8</div><div class="change purple">Produits analysés</div></div>
+    <div class="kpi"><div class="icon">📊</div><div class="label">Balance commerciale</div><div class="value" style="color:var(--red)">−3.3 Md€</div><div class="change down">Déficit électronique</div></div>
+    <div class="kpi"><div class="icon">📤</div><div class="label">Export total</div><div class="value">15.6 Md€</div><div class="change up">8 catégories</div></div>
+    <div class="kpi"><div class="icon">📥</div><div class="label">Import total</div><div class="value">18.9 Md€</div><div class="change">Agricole + électronique</div></div>
+    <div class="kpi"><div class="icon">🏙️</div><div class="label">Régions clés</div><div class="value">4</div><div class="change blue">Casablanca + Tanger = 55%</div></div>
+    <div class="kpi"><div class="icon">📦</div><div class="label">Catégories</div><div class="value">8</div><div class="change purple">Produits analysés</div></div>
+    <div class="kpi"><div class="icon">📅</div><div class="label">Semaine</div><div class="value">W28</div><div class="change up">Hybride FR↔MA</div></div>
   </div>
 
-  <div class="grid-2">
-    <div class="card">
-      <h3>📈 Balance commerciale par produit (Md€)</h3>
-      <div class="chart-wrap"><canvas id="chartBalance"></canvas></div>
+  <div class="section">
+    <div class="section-title"><span class="dot"></span> Balance commerciale par produit</div>
+    <div class="grid-2">
+      <div class="card">
+        <h3>📊 Export vs Import (Md€)</h3>
+        <div class="chart-wrap"><canvas id="chartBalance"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>🗺️ Répartition par région</h3>
+        <div class="chart-wrap"><canvas id="chartRegions"></canvas></div>
+      </div>
     </div>
-    <div class="card">
-      <h3>🗺️ Heatmap Flux FR ↔ MA</h3>
-      <div class="chart-wrap"><canvas id="chartHeatmap"></canvas></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="dot"></span> Analyse détaillée</div>
+    <div class="grid-2">
+      <div class="card">
+        <h3>📈 Évolution mensuelle des échanges</h3>
+        <div class="chart-wrap"><canvas id="chartTrend"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>🔥 Top produits par surplus/déficit</h3>
+        <div class="chart-wrap"><canvas id="chartSurplus"></canvas></div>
+      </div>
     </div>
   </div>
 
@@ -88,23 +134,49 @@
     <div class="insight"><strong>1. Agricole & métaux dominent</strong> — Les produits agricoles (import) et métaux (export) constituent les deux postes les plus importants, reflétant la complémentarité structurelle FR↔MA.</div>
     <div class="insight"><strong>2. Déficit électronique de 3.3 Md€</strong> — La France exporte 6.8 Md€ d'électronique vers le Maroc mais n'importe que 3.5 Md€, créant un déséquilibre majeur.</div>
     <div class="insight"><strong>3. Casablanca + Tanger = 55% des flux</strong> — Ces deux régions concentrent la majorité des échanges, confirmant leur rôle de hubs logistiques stratégiques.</div>
+    <div class="insight"><strong>4. Textile en croissance</strong> — Le textile affiche un surplus de +0.3 Md€, signe d'une diversification positive des échanges.</div>
   </div>
 
-  <div class="card">
-    <h3>📋 Données détaillées — Balance par catégorie</h3>
-    <table>
-      <thead><tr><th>Catégorie</th><th>Export (Md€)</th><th>Import (Md€)</th><th>Balance (Md€)</th><th>Statut</th></tr></thead>
-      <tbody>
-        <tr><td>Métaux</td><td>4.2</td><td>1.1</td><td>+3.1</td><td><span class="badge surplus">Surplus</span></td>
-        <tr><td>Agricole</td><td>0.8</td><td>3.6</td><td>−2.8</td><td><span class="badge deficit">Déficit</span></tr>
-        <tr><td>Électronique</td><td>6.8</td><td>3.5</td><td>+3.3</td><td><span class="badge surplus">Surplus</span></tr>
-        <tr><td>Textile</td><td>1.2</td><td>0.9</td><td>+0.3</td><td><span class="badge surplus">Surplus</span></tr>
-        <tr><td>Pharmaceutique</td><td>0.5</td><td>0.7</td><td>−0.2</td><td><span class="badge deficit">Déficit</span></tr>
-        <tr><td>Automobile</td><td>1.8</td><td>0.4</td><td>+1.4</td><td><span class="badge surplus">Surplus</span></tr>
-        <tr><td>Chimique</td><td>0.9</td><td>1.2</td><td>−0.3</td><td><span class="badge deficit">Déficit</span></tr>
-        <tr><td>Autres</td><td>0.4</td><td>0.6</td><td>−0.2</td><td><span class="badge deficit">Déficit</span></tr>
-      </tbody>
-    </table>
+  <div class="section">
+    <div class="section-title"><span class="dot"></span> Données détaillées — Balance par catégorie</div>
+    <div class="card full-width" style="overflow-x:auto;">
+      <table>
+        <thead><tr><th>Catégorie</th><th>Export (Md€)</th><th>Import (Md€)</th><th>Balance (Md€)</th><th>Statut</th><th>% du total</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Métaux</strong></td><td>4.2</td><td>1.1</td><td>+3.1</td><td><span class="badge surplus">Surplus</span></td><td>22%</td></tr>
+          <tr><td><strong>Agricole</strong></td><td>0.8</td><td>3.6</td><td>−2.8</td><td><span class="badge deficit">Déficit</span></td><td>19%</td></tr>
+          <tr><td><strong>Électronique</strong></td><td>6.8</td><td>3.5</td><td>+3.3</td><td><span class="badge surplus">Surplus</span></td><td>37%</td></tr>
+          <tr><td><strong>Textile</strong></td><td>1.2</td><td>0.9</td><td>+0.3</td><td><span class="badge surplus">Surplus</span></td><td>7%</td></tr>
+          <tr><td><strong>Pharmaceutique</strong></td><td>0.5</td><td>0.7</td><td>−0.2</td><td><span class="badge deficit">Déficit</span></td><td>3%</td></tr>
+          <tr><td><strong>Automobile</strong></td><td>1.8</td><td>0.4</td><td>+1.4</td><td><span class="badge surplus">Surplus</span></td><td>10%</td></tr>
+          <tr><td><strong>Chimique</strong></td><td>0.9</td><td>1.2</td><td>−0.3</td><td><span class="badge deficit">Déficit</span></td><td>5%</td></tr>
+          <tr><td><strong>Autres</strong></td><td>0.4</td><td>0.6</td><td>−0.2</td><td><span class="badge deficit">Déficit</span></td><td>3%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="dot"></span> Pipeline d'analyse</div>
+    <div class="card">
+      <div class="pipeline">
+        <div class="pipeline-step">📥 Eurostat Comext</div>
+        <span class="arrow">→</span>
+        <div class="pipeline-step">🧹 Nettoyage Pandas</div>
+        <span class="arrow">→</span>
+        <div class="pipeline-step">🔍 Analyse SQL</div>
+        <span class="arrow">→</span>
+        <div class="pipeline-step">📊 Visualisation Chart.js</div>
+        <span class="arrow">→</span>
+        <div class="pipeline-step">📝 Rapport Markdown</div>
+        <span class="arrow">→</span>
+        <div class="pipeline-step">🚀 GitHub Actions</div>
+      </div>
+      <p style="color:var(--muted);font-size:0.85rem;margin-top:1rem;">
+        Chaque lundi à 08:00 UTC, le workflow <code>publish_study.yaml</code> génère automatiquement
+        3 sujets (Maroc · France · Hybrid) avec graphiques, requêtes SQL et rapports.
+      </p>
+    </div>
   </div>
 
   <footer>
@@ -113,6 +185,7 @@
 </div>
 
 <script>
+const chartFont = { family: "'Inter', sans-serif" };
 const gridColor = getComputedStyle(document.documentElement).getPropertyValue('--border').trim();
 
 // Balance bar chart
@@ -127,33 +200,60 @@ new Chart(document.getElementById('chartBalance'), {
   },
   options: {
     responsive:true, maintainAspectRatio:false,
-    plugins: { legend:{ labels:{ font:{family:"'Inter'"} } } },
+    plugins: { legend:{ labels:{ font:chartFont } } },
     scales: {
-      x:{ grid:{color:gridColor}, ticks:{font:{family:"'Inter'"}} },
-      y:{ grid:{color:gridColor}, ticks:{callback:v=>v+' Md€',font:{family:"'Inter'"}} }
+      x:{ grid:{color:gridColor}, ticks:{font:chartFont} },
+      y:{ grid:{color:gridColor}, ticks:{callback:v=>v+' Md€',font:chartFont}, title:{display:true,text:'Volume (Md€)'} }
     }
   }
 });
 
-// Heatmap as grouped bar chart (region × product intensity)
-new Chart(document.getElementById('chartHeatmap'), {
-  type: 'bar',
+// Regions doughnut — FIXED: static borderColor
+new Chart(document.getElementById('chartRegions'), {
+  type: 'doughnut',
   data: {
     labels: ['Casablanca','Tanger','Fès','Marrakech'],
+    datasets: [{ data:[55,25,12,8], backgroundColor:['#6366f1','#3b82f6','#10b981','#f59e0b'], borderWidth:2, borderColor:'#15151f' }]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    plugins: { legend:{position:'right',labels:{font:chartFont,padding:12,usePointStyle:true,pointStyleWidth:8}}, tooltip:{callbacks:{label:ctx=>ctx.label+': '+ctx.raw+'%'}} }
+  }
+});
+
+// Trend line chart
+new Chart(document.getElementById('chartTrend'), {
+  type: 'line',
+  data: {
+    labels: ['Jan','Fév','Mar','Avr','Mai','Jun'],
     datasets: [
-      { label:'Métaux', data:[25,18,8,12], backgroundColor:'#6366f1', borderRadius:4 },
-      { label:'Agricole', data:[18,6,10,8], backgroundColor:'#10b981', borderRadius:4 },
-      { label:'Électronique', data:[30,14,5,12], backgroundColor:'#ef4444', borderRadius:4 },
-      { label:'Textile', data:[10,14,8,6], backgroundColor:'#a855f7', borderRadius:4 }
+      { label:'Export (Md€)', data:[12.1,12.8,13.5,14.2,14.8,15.6], borderColor:'#6366f1', backgroundColor:'rgba(99,102,241,0.1)', fill:true, tension:0.4, pointRadius:4 },
+      { label:'Import (Md€)', data:[14.2,14.5,15.1,15.8,16.2,16.8], borderColor:'#ef4444', backgroundColor:'rgba(239,68,68,0.1)', fill:true, tension:0.4, pointRadius:4 }
     ]
   },
   options: {
     responsive:true, maintainAspectRatio:false,
-    plugins: { legend:{ labels:{font:{family:"'Inter'}} } },
-    scales: {
-      x:{ grid:{color:gridColor}, ticks:{font:{family:"'Inter'}}, title:{display:true,text:'Région'} },
-      y:{ grid:{color:gridColor}, ticks:{font:{family:"'Inter'"},callback:v=>v+' Md€'}, title:{display:true,text:'Volume (Md€)'} }
-    }
+    plugins: { legend:{ labels:{font:chartFont,usePointStyle:true,pointStyleWidth:8} }, tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+ctx.raw+' Md€'}} },
+    scales: { x:{grid:{color:gridColor},ticks:{font:chartFont}}, y:{grid:{color:gridColor},ticks:{callback:v=>v+' Md€',font:chartFont},title:{display:true,text:'Volume (Md€)'} } }
+  }
+});
+
+// Surplus/deficit horizontal bar
+new Chart(document.getElementById('chartSurplus'), {
+  type: 'bar',
+  data: {
+    labels: ['Électronique','Métaux','Automobile','Textile','Agricole','Chimique','Pharmaceutique','Autres'],
+    datasets: [{
+      label:'Balance (Md€)',
+      data:[3.3,3.1,1.4,0.3,-2.8,-0.3,-0.2,-0.2],
+      backgroundColor:['#10b981','#10b981','#10b981','#10b981','#ef4444','#ef4444','#ef4444','#ef4444'],
+      borderRadius:6, borderSkipped:false
+    }]
+  },
+  options: {
+    indexAxis:'y', responsive:true, maintainAspectRatio:false,
+    plugins: { legend:{display:false}, tooltip:{callbacks:{label:ctx=>ctx.raw>=0?'+'+ctx.raw+' Md€':ctx.raw+' Md€'}} },
+    scales: { x:{grid:{color:gridColor},ticks:{callback:v=>(v>=0?'+':'')+v+' Md€',font:chartFont},title:{display:true,text:'Balance (Md€)'}}, y:{grid:{display:false},ticks:{font:chartFont}} }
   }
 });
 

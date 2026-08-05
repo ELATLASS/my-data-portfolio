@@ -6,77 +6,123 @@
   <title>W32 — Population Maroc | Dashboard</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
-    :root { --bg:#0a0a0f; --card:#15151f; --accent:#6366f1; --text:#e5e7eb; --muted:#9ca3af; --border:#27272f; --green:#10b981; --yellow:#f59e0b; --red:#ef4444; --blue:#3b82f6; --purple:#a855f7; }
-    [data-theme="light"] { --bg:#f1f5f9; --card:#ffffff; --text:#1e293b; --muted:#64748b; --border:#e2e8f0; }
+    :root { --bg:#0a0a0f; --card:#15151f; --card-hover:#1a1a2e; --accent:#6366f1; --accent-light:#818cf8; --text:#e5e7eb; --muted:#9ca3af; --border:#27272f; --green:#10b981; --green-bg:rgba(16,185,129,0.12); --yellow:#f59e0b; --yellow-bg:rgba(245,158,11,0.12); --red:#ef4444; --red-bg:rgba(239,68,68,0.12); --blue:#3b82f6; --blue-bg:rgba(59,130,246,0.12); --purple:#a855f7; --purple-bg:rgba(168,85,247,0.12); }
+    [data-theme="light"] { --bg:#f1f5f9; --card:#ffffff; --card-hover:#f8fafc; --accent:#4f46e5; --accent-light:#6366f1; --text:#1e293b; --muted:#64748b; --border:#e2e8f0; --green-bg:rgba(16,185,129,0.08); --yellow-bg:rgba(245,158,11,0.08); --red-bg:rgba(239,68,68,0.08); --blue-bg:rgba(59,130,246,0.08); --purple-bg:rgba(168,85,247,0.08); }
     * { margin:0; padding:0; box-sizing:border-box; }
     body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); line-height:1.6; transition:background .3s,color .3s; }
     .container { max-width:1400px; margin:0 auto; padding:2rem; }
     header { display:flex; align-items:center; justify-content:space-between; gap:2rem; padding:1.5rem 0; border-bottom:1px solid var(--border); margin-bottom:2rem; }
+    .header-left { display:flex; align-items:center; gap:1.5rem; }
+    .avatar { width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--purple)); display:flex; align-items:center; justify-content:center; font-size:1.5rem; font-weight:700; color:white; flex-shrink:0; }
     h1 { font-size:1.75rem; font-weight:700; }
     .subtitle { color:var(--muted); font-size:0.9rem; margin-top:0.25rem; }
     .theme-toggle { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:0.4rem 0.8rem; cursor:pointer; color:var(--text); font-size:0.8rem; }
+    .theme-toggle:hover { background:var(--card-hover); }
     .kpi-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem; margin-bottom:2rem; }
-    .kpi { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.25rem; }
+    .kpi { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.25rem; transition:transform .2s,box-shadow .2s; }
+    .kpi:hover { transform:translateY(-2px); box-shadow:0 4px 20px rgba(0,0,0,0.2); }
     .kpi .label { color:var(--muted); font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em; }
     .kpi .value { font-size:1.75rem; font-weight:700; margin:0.25rem 0; }
     .kpi .change { font-size:0.78rem; font-weight:600; }
     .kpi .change.up { color:var(--green); }
+    .kpi .change.down { color:var(--red); }
+    .kpi .icon { font-size:1.5rem; margin-bottom:0.25rem; }
+    .section { margin-bottom:2.5rem; }
+    .section-title { font-size:1.25rem; font-weight:600; margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem; }
+    .section-title .dot { width:8px; height:8px; border-radius:50%; background:var(--accent); }
     .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem; }
-    .card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.5rem; }
+    .grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:1.5rem; }
+    .card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.5rem; transition:transform .2s,box-shadow .2s; }
+    .card:hover { transform:translateY(-1px); box-shadow:0 4px 16px rgba(0,0,0,0.15); }
     .card h3 { color:var(--accent); margin-bottom:0.75rem; font-size:1rem; }
-    .chart-wrap { position:relative; width:100%; height:320px; }
+    .card.full-width { grid-column:1 / -1; }
+    .chart-wrap { position:relative; width:100%; height:300px; }
     .chart-wrap canvas { width:100%!important; height:100%!important; }
     table { width:100%; border-collapse:collapse; font-size:0.85rem; }
     th,td { padding:0.5rem 0.75rem; text-align:left; border-bottom:1px solid var(--border); }
     th { color:var(--muted); font-weight:600; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.04em; }
-    tr:hover td { background:var(--card); }
+    tr:hover td { background:var(--card-hover); }
     .badge { display:inline-block; padding:0.15rem 0.5rem; border-radius:999px; font-size:0.7rem; font-weight:600; }
-    .badge.green { background:rgba(16,185,129,0.12); color:var(--green); }
-    .badge.blue { background:rgba(59,130,246,0.12); color:var(--blue); }
+    .badge.green { background:var(--green-bg); color:var(--green); }
+    .badge.blue { background:var(--blue-bg); color:var(--blue); }
     .nav { display:flex; gap:0.75rem; margin-bottom:2rem; flex-wrap:wrap; }
     .nav a { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:0.4rem 0.8rem; font-size:0.8rem; color:var(--text); text-decoration:none; transition:background .2s; }
-    .nav a:hover { background:var(--accent); color:white; }
-    .nav a.active { background:var(--accent); color:white; }
+    .nav a:hover { background:var(--accent); color:white; text-decoration:none; }
     .insight { padding:1rem; border-left:3px solid var(--accent); background:var(--card); border-radius:0 8px 8px 0; margin:1rem 0; }
     .insight strong { color:var(--accent); }
-    footer { margin-top:3rem; padding-top:1rem; border-top:1px solid var(--border); text-align:center; color:var(--muted); font-size:0.78rem; }
-    @media(max-width:768px) { .grid-2 { grid-template-columns:1fr; } .kpi-row { grid-template-columns:repeat(2,1fr); } }
+    .study-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.5rem; cursor:pointer; transition:transform .2s,box-shadow .2s; text-decoration:none; color:var(--text); display:block; }
+    .study-card:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(0,0,0,0.25); text-decoration:none; }
+    .study-card h3 { margin-bottom:0.5rem; }
+    .study-card .meta { color:var(--muted); font-size:0.85rem; }
+    .study-card .stats { display:flex; gap:1.5rem; margin-top:1rem; }
+    .study-card .stat { text-align:center; }
+    .study-card .stat .num { font-size:1.25rem; font-weight:700; color:var(--accent); }
+    .study-card .stat .lbl { font-size:0.75rem; color:var(--muted); }
+    .pipeline { display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap; margin:1rem 0; }
+    .pipeline-step { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:0.5rem 1rem; font-size:0.85rem; display:flex; align-items:center; gap:0.5rem; }
+    .pipeline-step .arrow { color:var(--accent); font-weight:700; }
+    footer { margin-top:3rem; padding-top:1.5rem; border-top:1px solid var(--border); text-align:center; color:var(--muted); font-size:0.8rem; }
+    a { color:var(--accent); text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    @media(max-width:768px) { .grid-2,.grid-3 { grid-template-columns:1fr; } .kpi-row { grid-template-columns:repeat(2,1fr); } }
   </style>
 </head>
 <body>
 <div class="container">
   <header>
-    <div>
-      <h1>🏙️ W32 — Population Urbaine Maroc</h1>
-      <p class="subtitle">Semaine 32 · 2026 · 20 villes · HCP données 2026 · Population totale : 8.5M</p>
+    <div class="header-left">
+      <div class="avatar">EA</div>
+      <div>
+        <h1>Abdessamad El Atlassi</h1>
+        <p class="subtitle">Data Analyst & BI Engineer — Portfolio de statistiques automatisées</p>
+      </div>
     </div>
-    <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+    <button class="theme-toggle" onclick="toggleTheme()">🌓 Mode</button>
   </header>
 
   <nav class="nav">
     <a href="../index.html">🏠 Principal</a>
-    <a href="../w28/index.html">← W28</a>
-    <a href="../w29/index.html">← W29</a>
-    <a href="../w30/index.html">← W30</a>
-    <a href="../w31/index.html">← W31</a>
+    <a href="../w28/">← W28</a>
+    <a href="../w29/">← W29</a>
+    <a href="../w30/">← W30</a>
+    <a href="../w31/">← W31</a>
+    <a href="../../studies/maroc/">📁 Source</a>
   </nav>
 
   <div class="kpi-row">
-    <div class="kpi"><div class="label">Villes analysées</div><div class="value">20</div><div class="change up">HCP 2026</div></div>
-    <div class="kpi"><div class="label">Pop. totale</div><div class="value">8.5M</div><div class="change">top 20 villes</div></div>
-    <div class="kpi"><div class="label">#1 Casablanca</div><div class="value">3.42M</div><div class="change up">40% du total</div></div>
-    <div class="kpi"><div class="label">#2 Rabat</div><div class="value">1.80M</div><div class="change">21% du total</div></div>
-    <div class="kpi"><div class="label">#3 Fès</div><div class="value">1.10M</div><div class="change">13% du total</div></div>
+    <div class="kpi"><div class="icon">🏙️</div><div class="label">Villes analysées</div><div class="value">20</div><div class="change up">HCP 2026</div></div>
+    <div class="kpi"><div class="icon">👥</div><div class="label">Pop. totale</div><div class="value">8.5M</div><div class="change">top 20 villes</div></div>
+    <div class="kpi"><div class="icon">📍</div><div class="label">#1 Casablanca</div><div class="value">3.42M</div><div class="change up">40% du total</div></div>
+    <div class="kpi"><div class="icon">📍</div><div class="label">#2 Rabat</div><div class="value">1.80M</div><div class="change">21% du total</div></div>
+    <div class="kpi"><div class="icon">📍</div><div class="label">#3 Fès</div><div class="value">1.10M</div><div class="change">13% du total</div></div>
+    <div class="kpi"><div class="icon">📊</div><div class="label">Régions</div><div class="value">7</div><div class="change blue">Analysées</div></div>
   </div>
 
-  <div class="grid-2">
-    <div class="card">
-      <h3>📊 Top 10 villes par population</h3>
-      <div class="chart-wrap"><canvas id="chartTopCities"></canvas></div>
+  <div class="section">
+    <div class="section-title"><span class="dot"></span> Top 10 villes par population</div>
+    <div class="grid-2">
+      <div class="card">
+        <h3>📊 Barres horizontales</h3>
+        <div class="chart-wrap"><canvas id="chartTopCities"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>🗺️ Population par région</h3>
+        <div class="chart-wrap"><canvas id="chartByRegion"></canvas></div>
+      </div>
     </div>
-    <div class="card">
-      <h3>🗺️ Population par région</h3>
-      <div class="chart-wrap"><canvas id="chartByRegion"></canvas></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="dot"></span> Analyse avancée</div>
+    <div class="grid-2">
+      <div class="card">
+        <h3>📈 Évolution population (4 semaines)</h3>
+        <div class="chart-wrap"><canvas id="chartTrend"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>🔥 Croissance annuelle (Top 5)</h3>
+        <div class="chart-wrap"><canvas id="chartGrowth"></canvas></div>
+      </div>
     </div>
   </div>
 
@@ -85,25 +131,51 @@
     <div class="insight"><strong>1. Casablanca domine</strong> — Avec 3.42M habitants, Casablanca représente 40% de la population des 20 villes étudiées, soit 3× plus que Rabat (2e).</div>
     <div class="insight"><strong>2. Inégalités régionales marquées</strong> — Le Grand Casablanca-Safi et le Fès-Meknès concentrent 55% de la population urbaine, tandis que les régions sahariennes restent peu denses.</div>
     <div class="insight"><strong>3. Urbanisation en cours</strong> — Les villes de taille moyenne (100k–500k) connaissent une croissance rapide (+1.5% à +2.3% annuel), signe d'une urbanisation active.</div>
+    <div class="insight"><strong>4. Tanger en croissance rapide</strong> — +2.0% annuel, la 5e ville la plus peuplée, confirment son rôle de pôle économique nordiste.</div>
   </div>
 
-  <div class="card">
-    <h3>📋 Classement détaillé — Top 20 villes</h3>
-    <table>
-      <thead><tr><th>#</th><th>Ville</th><th>Région</th><th>Population</th><th>Part (%)</th><th>Croissance</th></tr></thead>
-      <tbody>
-        <tr><td>1</td><td><strong>Casablanca</strong></td><td>Grand Casablanca-Safi</td><td>3,420,000</td><td>40.2%</td><td><span class="badge green">+2.1%</span></td></tr>
-        <tr><td>2</td><td><strong>Rabat</strong></td><td>Rabat-Salé-Zemmour-Kénitra</td><td>1,800,000</td><td>21.2%</td><td><span class="badge green">+1.8%</span></td></tr>
-        <tr><td>3</td><td><strong>Fès</strong></td><td>Fès-Meknès</td><td>1,100,000</td><td>12.9%</td><td><span class="badge green">+1.5%</span></td></tr>
-        <tr><td>4</td><td><strong>Marrakech</strong></td><td>Marrakech-Safi</td><td>985,000</td><td>11.6%</td><td><span class="badge green">+2.3%</span></td></tr>
-        <tr><td>5</td><td><strong>Tanger</strong></td><td>Tanger-Tétouan-Al Hoceima</td><td>850,000</td><td>10.0%</td><td><span class="badge green">+2.0%</span></td></tr>
-        <tr><td>6</td><td>Meknès</td><td>Fès-Meknès</td><td>650,000</td><td>7.6%</td><td><span class="badge green">+1.2%</span></td></tr>
-        <tr><td>7</td><td>Oujda</td><td>Oriental</td><td>520,000</td><td>6.1%</td><td><span class="badge green">+1.0%</span></td></tr>
-        <tr><td>8</td><td>Kénitra</td><td>Rabat-Salé-Zemmour-Kénitra</td><td>480,000</td><td>5.6%</td><td><span class="badge green">+1.7%</span></td></tr>
-        <tr><td>9</td><td>Témara</td><td>Rabat-Salé-Zemmour-Kénitra</td><td>420,000</td><td>4.9%</td><td><span class="badge green">+1.9%</span></td></tr>
-        <tr><td>10</td><td>Safi</td><td>Grand Casablanca-Safi</td><td>380,000</td><td>4.5%</td><td><span class="badge green">+0.8%</span></td></tr>
-      </tbody>
-    </table>
+  <div class="section">
+    <div class="section-title"><span class="dot"></span> Classement détaillé — Top 20 villes</div>
+    <div class="card full-width" style="overflow-x:auto;">
+      <table>
+        <thead><tr><th>#</th><th>Ville</th><th>Région</th><th>Population</th><th>Part (%)</th><th>Croissance</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><strong>Casablanca</strong></td><td>Grand Casablanca-Safi</td><td>3,420,000</td><td>40.2%</td><td><span class="badge green">+2.1%</span></td></tr>
+          <tr><td>2</td><td><strong>Rabat</strong></td><td>Rabat-Salé-Zemmour-Kénitra</td><td>1,800,000</td><td>21.2%</td><td><span class="badge green">+1.8%</span></td></tr>
+          <tr><td>3</td><td><strong>Fès</strong></td><td>Fès-Meknès</td><td>1,100,000</td><td>12.9%</td><td><span class="badge green">+1.5%</span></td></tr>
+          <tr><td>4</td><td><strong>Marrakech</strong></td><td>Marrakech-Safi</td><td>985,000</td><td>11.6%</td><td><span class="badge green">+2.3%</span></td></tr>
+          <tr><td>5</td><td><strong>Tanger</strong></td><td>Tanger-Tétouan-Al Hoceima</td><td>850,000</td><td>10.0%</td><td><span class="badge green">+2.0%</span></td></tr>
+          <tr><td>6</td><td>Meknès</td><td>Fès-Meknès</td><td>650,000</td><td>7.6%</td><td><span class="badge green">+1.2%</span></td></tr>
+          <tr><td>7</td><td>Oujda</td><td>Oriental</td><td>520,000</td><td>6.1%</td><td><span class="badge green">+1.0%</span></td></tr>
+          <tr><td>8</td><td>Kénitra</td><td>Rabat-Salé-Zemmour-Kénitra</td><td>480,000</td><td>5.6%</td><td><span class="badge green">+1.7%</span></td></tr>
+          <tr><td>9</td><td>Témara</td><td>Rabat-Salé-Zemmour-Kénitra</td><td>420,000</td><td>4.9%</td><td><span class="badge green">+1.9%</span></td></tr>
+          <tr><td>10</td><td>Safi</td><td>Grand Casablanca-Safi</td><td>380,000</td><td>4.5%</td><td><span class="badge green">+0.8%</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="dot"></span> Pipeline d'analyse</div>
+    <div class="card">
+      <div class="pipeline">
+        <div class="pipeline-step">📥 Données HCP</div>
+        <span class="arrow">→</span>
+        <div class="pipeline-step">🧹 Nettoyage Pandas</div>
+        <span class="arrow">→</span>
+        <div class="pipeline-step">🔍 Analyse SQL</div>
+        <span class="arrow">→</span>
+        <div class="pipeline-step">📊 Visualisation Chart.js</div>
+        <span class="arrow">→</span>
+        <div class="pipeline-step">📝 Rapport Markdown</div>
+        <span class="arrow">→</span>
+        <div class="pipeline-step">🚀 GitHub Actions</div>
+      </div>
+      <p style="color:var(--muted);font-size:0.85rem;margin-top:1rem;">
+        Chaque lundi à 08:00 UTC, le workflow <code>publish_study.yaml</code> génère automatiquement
+        3 sujets (Maroc · France · Hybrid) avec graphiques, requêtes SQL et rapports.
+      </p>
+    </div>
   </div>
 
   <footer>
@@ -112,18 +184,19 @@
 </div>
 
 <script>
+const chartFont = { family: "'Inter', sans-serif" };
 const gridColor = getComputedStyle(document.documentElement).getPropertyValue('--border').trim();
 
 new Chart(document.getElementById('chartTopCities'), {
   type: 'bar',
   data: {
     labels: ['Casablanca','Rabat','Fès','Marrakech','Tanger','Meknès','Oujda','Kénitra','Témara','Safi'],
-    datasets: [{ label:'Population', data:[3421,1800,1100,985,850,650,520,480,420,380], backgroundColor:['#6366f1','#818cf8','#a78bfa','#c4b5fd','#8b5cf6','#7c3aed','#6d28d9','#5b21b6','#4c1d95','#4338ca'], borderRadius:6, borderSkipped:false }]
+    datasets: [{ label:'Population (K)', data:[3421,1800,1100,985,850,650,520,480,420,380], backgroundColor:['#6366f1','#818cf8','#a78bfa','#c4b5fd','#8b5cf6','#7c3aed','#6d28d9','#5b21b6','#4c1d95','#4338ca'], borderRadius:6, borderSkipped:false }]
   },
   options: {
     indexAxis:'y', responsive:true, maintainAspectRatio:false,
-    plugins: { legend:{display:false}, tooltip:{callbacks:{label:ctx=>ctx.raw.toLocaleString()+' hab.'}} },
-    scales: { x:{grid:{color:gridColor},ticks:{callback:v=>(v/1e3).toFixed(0)+'K',font:{family:"'Inter'"}},title:{display:true,text:'Population (milliers)'}}, y:{grid:{display:false},ticks:{font:{family:"'Inter'"}}} }
+    plugins: { legend:{display:false}, tooltip:{callbacks:{label:ctx=>ctx.raw.toLocaleString()+'K hab.'}} },
+    scales: { x:{grid:{color:gridColor},ticks:{callback:v=>(v/1e3).toFixed(0)+'K',font:chartFont},title:{display:true,text:'Population (milliers)'}}, y:{grid:{display:false},ticks:{font:chartFont}} }
   }
 });
 
@@ -135,7 +208,43 @@ new Chart(document.getElementById('chartByRegion'), {
   },
   options: {
     responsive:true, maintainAspectRatio:false,
-    plugins: { legend:{position:'right',labels:{font:{family:"'Inter'"},padding:12,usePointStyle:true,pointStyleWidth:8}}, tooltip:{callbacks:{label:ctx=>{const t=ctx.dataset.data.reduce((a,b)=>a+b,0);return ctx.label+': '+(ctx.raw/1000).toFixed(1)+'M ('+((ctx.raw/t)*100).toFixed(1)+'%)'}}} }
+    plugins: { legend:{position:'right',labels:{font:chartFont,padding:12,usePointStyle:true,pointStyleWidth:8}}, tooltip:{callbacks:{label:ctx=>{const t=ctx.dataset.data.reduce((a,b)=>a+b,0);return ctx.label+': '+(ctx.raw/1000).toFixed(1)+'M ('+((ctx.raw/t)*100).toFixed(1)+'%)'}}} }
+  }
+});
+
+new Chart(document.getElementById('chartTrend'), {
+  type: 'line',
+  data: {
+    labels: ['W29','W30','W31','W32'],
+    datasets: [
+      { label:'Casablanca', data:[3400,3410,3415,3421], borderColor:'#6366f1', backgroundColor:'rgba(99,102,241,0.1)', fill:true, tension:0.4, pointRadius:4 },
+      { label:'Rabat', data:[1790,1795,1798,1800], borderColor:'#3b82f6', backgroundColor:'rgba(59,130,246,0.1)', fill:true, tension:0.4, pointRadius:4 },
+      { label:'Fès', data:[1090,1095,1098,1100], borderColor:'#10b981', backgroundColor:'rgba(16,185,129,0.1)', fill:true, tension:0.4, pointRadius:4 },
+      { label:'Marrakech', data:[970,978,982,985], borderColor:'#f59e0b', backgroundColor:'rgba(245,158,11,0.1)', fill:true, tension:0.4, pointRadius:4 }
+    ]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    plugins: { legend:{ labels:{font:chartFont,usePointStyle:true,pointStyleWidth:8} }, tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+(ctx.raw/1e3).toFixed(0)+'K'}} },
+    scales: { x:{grid:{color:gridColor},ticks:{font:chartFont}}, y:{grid:{color:gridColor},ticks:{callback:v=>(v/1e3).toFixed(0)+'K',font:chartFont},title:{display:true,text:'Population (milliers)'}} }
+  }
+});
+
+new Chart(document.getElementById('chartGrowth'), {
+  type: 'bar',
+  data: {
+    labels: ['Casablanca','Marrakech','Tanger','Rabat','Fès'],
+    datasets: [{
+      label: 'Croissance (%)',
+      data: [2.1, 2.3, 2.0, 1.8, 1.5],
+      backgroundColor: ['#10b981','#10b981','#10b981','#f59e0b','#f59e0b'],
+      borderRadius: 6, borderSkipped: false
+    }]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    plugins: { legend:{display:false}, tooltip:{callbacks:{label:ctx=>ctx.raw+'%'}} },
+    scales: { x:{grid:{display:false},ticks:{font:chartFont}}, y:{grid:{color:gridColor},ticks:{callback:v=>v+'%',font:chartFont},title:{display:true,text:'Croissance annuelle'}} }
   }
 });
 
