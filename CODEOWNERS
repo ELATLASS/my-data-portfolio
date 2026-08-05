@@ -1,0 +1,16 @@
+# CODEOWNERS
+
+# Global owners
+* @ELATLASS
+
+# Workflows
+.github/workflows/* @ELATLASS
+
+# Dashboards
+dashboards/* @ELATLASS
+
+# Studies
+studies/* @ELATLASS
+
+# Scripts
+scripts/* @ELATLASS
