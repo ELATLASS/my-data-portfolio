@@ -25,7 +25,8 @@ from datetime import datetime, timedelta
 
 # --- Config ---
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PROJECTS_DIR = os.path.join(REPO_ROOT, "projects")
+STUDIES_DIR = os.path.join(REPO_ROOT, "studies")
+DASHBOARDS_DIR = os.path.join(REPO_ROOT, "dashboards")
 TODAY = datetime.utcnow().date()
 WEEK_NUMBER = int(os.getenv("WEEK_OVERRIDE", 0)) or TODAY.isocalendar()[1]
 YEAR = TODAY.year
@@ -558,7 +559,7 @@ def generate_all_topics():
 
     for topic in TOPICS:
         week_dir_name = f"{week_dir_base}-{topic}"
-        week_dir_path = os.path.join(PROJECTS_DIR, week_dir_name)
+        week_dir_path = os.path.join(STUDIES_DIR, topic, week_dir_name)
         print(f"  📊 Sujet: {topic.upper()}")
         generate_topic(topic, week_dir_name, week_dir_path)
 
