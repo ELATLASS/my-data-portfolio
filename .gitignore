@@ -1,5 +1,13 @@
 # Dossiers et fichiers générés par le workflow
 __pycache__/
+
+# Generated figures
+figures/
+*.png
+*.jpg
+*.jpeg
+*.gif
+
 *.pyc
 .env
 .venv/
