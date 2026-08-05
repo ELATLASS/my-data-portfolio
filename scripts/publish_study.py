@@ -536,7 +536,7 @@ def generate_topic(topic_name, week_dir_name, week_dir_path):
     data = builder()
     html = generate_topic_dashboard(topic_name, data, week_dir_name)
 
-    # Write dashboard
+    # Write study files (in studies/)
     with open(os.path.join(week_dir_path, "index.html"), "w", encoding="utf-8") as f:
         f.write(html)
 
@@ -548,7 +548,12 @@ def generate_topic(topic_name, week_dir_name, week_dir_path):
         for insight_title, insight_text in data["insights"]:
             f.write(f"### {insight_title}\n{insight_text}\n\n")
 
-    print(f"  [✅] {topic_name}: dashboard + README générés")
+    # Write dashboard copy in dashboards/
+    dashboard_dir = os.path.join(DASHBOARDS_DIR, week_dir_name.split("-")[-1])
+    os.makedirs(dashboard_dir, exist_ok=True)
+    with open(os.path.join(dashboard_dir, "index.html"), "w", encoding="utf-8") as f:
+        f.write(html)
+    print(f"  [✅] {topic_name}: study + dashboard generated")
 
 
 def generate_all_topics():
