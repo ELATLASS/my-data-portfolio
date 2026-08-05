@@ -43,9 +43,9 @@ jobs:
       if: success()
       run: |
         for topic in maroc france hybrid; do
-          LATEST=$(ls -td projects/${YEAR:-*}-W${WEEK_OVERRIDE:-*}-$topic 2>/dev/null | head -1)
+          LATEST=$(ls -td studies/$topic/2026-W* 2>/dev/null | head -1)
           if [ -z "$LATEST" ]; then
-            echo "::error::No project directory found for topic: $topic"
+            echo "::error::No study directory found for topic: $topic"
             exit 1
           fi
           echo "✅ $topic: $LATEST"
@@ -56,6 +56,35 @@ jobs:
           echo "   ✅ index.html present ($(wc -c < "$LATEST/index.html") bytes)"
           if [ ! -f "$LATEST/README.md" ]; then
             echo "::warning::Missing README.md in $LATEST (non-fatal)"
+          fi
+          # Validate HTML contains Chart.js
+          if ! grep -q "chart.js" "$LATEST/index.html"; then
+            echo "::error::Missing Chart.js in $LATEST/index.html"
+            exit 1
+          fi
+          echo "   ✅ Chart.js present"
+          # Validate HTML contains KPI cards
+          if ! grep -q "kpi-row" "$LATEST/index.html"; then
+            echo "::error::Missing KPI cards in $LATEST/index.html"
+            exit 1
+          fi
+          echo "   ✅ KPI cards present"
+          # Validate HTML contains data table
+          if ! grep -q "<table" "$LATEST/index.html"; then
+            echo "::error::Missing data table in $LATEST/index.html"
+            exit 1
+          fi
+          echo "   ✅ Data table present"
+        done
+
+    - name: Validate dashboards exist
+      if: success()
+      run: |
+        for d in w28 w29 w30 w31 w32; do
+          if [ ! -f "dashboards/$d/index.html" ]; then
+            echo "::warning::Missing dashboard: dashboards/$d/index.html"
+          else
+            echo "✅ dashboards/$d/index.html ($(wc -c < "dashboards/$d/index.html") bytes)"
           fi
         done
 
