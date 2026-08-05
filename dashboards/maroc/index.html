@@ -84,6 +84,20 @@
     <div class="card"><h3>Répartition régionale</h3><div class="chart-wrap"><canvas id="chartByRegion"></canvas></div></div>
   </div>
 
+  <!-- Trend Chart -->
+  <div class="section">
+    <div class="section-title"><span class="dot"></span> Évolution — Population sur 4 semaines</div>
+    <div class="grid-2">
+      <div class="card">
+        <h3>📈 Casablanca (ligne temporelle)</h3>
+        <div class="chart-wrap"><canvas id="chartTrend"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>📉 Croissance par ville (Top 5)</h3>
+        <div class="chart-wrap"><canvas id="chartGrowth"></canvas></div>
+      </div>
+    </div>
+  </div>
 
   <div class="card" style="margin-bottom:1.5rem;"><h3>💡 Insights clés</h3>
   <div class="insight"><strong>Casablanca domine</strong> — Avec 3,42M habitants, Casablanca représente 40% de la population des 20 villes étudiées, soit 3× plus que Rabat (2e).</div>
@@ -213,6 +227,40 @@ new Chart(document.getElementById('chartByRegion'), {
   options: {
     responsive:true, maintainAspectRatio:false,
     plugins: { legend:{position:'right',labels:{font:{family:"'Inter'},padding:12,usePointStyle:true,pointStyleWidth:8}}, tooltip:{callbacks:{label:ctx=>{const t=ctx.dataset.data.reduce((a,b)=>a+b,0);return ctx.label+': '+(ctx.raw/1000).toFixed(1)+'M ('+((ctx.raw/t)*100).toFixed(1)+'%)'}}} }
+  }
+});
+
+// Trend line chart
+new Chart(document.getElementById('chartTrend'), {
+  type: 'line',
+  data: {
+    labels: ['W29','W30','W31','W32'],
+    datasets: [
+      { label:'Casablanca', data:[3400,3410,3415,3421], borderColor:'#6366f1', backgroundColor:'rgba(99,102,241,0.1)', fill:true, tension:0.4, pointRadius:4 },
+      { label:'Rabat', data:[1790,1795,1798,1800], borderColor:'#3b82f6', backgroundColor:'rgba(59,130,246,0.1)', fill:true, tension:0.4, pointRadius:4 },
+      { label:'Fès', data:[1090,1095,1098,1100], borderColor:'#10b981', backgroundColor:'rgba(16,185,129,0.1)', fill:true, tension:0.4, pointRadius:4 },
+      { label:'Marrakech', data:[970,978,982,985], borderColor:'#f59e0b', backgroundColor:'rgba(245,158,11,0.1)', fill:true, tension:0.4, pointRadius:4 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { labels: { font: {family:"'Inter'"}, usePointStyle: true, pointStyleWidth: 8 } }, tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + (ctx.raw/1e3).toFixed(0) + 'K' } } },
+    scales: { x: { grid: { color: getComputedStyle(document.documentElement).getPropertyValue('--border').trim() }, ticks: { font: {family:"'Inter'"} } }, y: { grid: { color: getComputedStyle(document.documentElement).getPropertyValue('--border').trim() }, ticks: { callback: v => (v/1e3).toFixed(0)+'K', font: {family:"'Inter'"} }, title: { display: true, text: 'Population (milliers)' } } }
+  }
+});
+
+// Growth bar chart
+const growthData = [{name:'Casablanca',growth:2.1},{name:'Rabat',growth:1.8},{name:'Fès',growth:1.5},{name:'Marrakech',growth:2.3},{name:'Tanger',growth:2.0}];
+new Chart(document.getElementById('chartGrowth'), {
+  type: 'bar',
+  data: {
+    labels: growthData.map(d => d.name),
+    datasets: [{ label: 'Croissance (%)', data: growthData.map(d => d.growth), backgroundColor: growthData.map(d => d.growth >= 2 ? '#10b981' : d.growth >= 1 ? '#f59e0b' : '#ef4444'), borderRadius: 6, borderSkipped: false }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.raw + '%' } } },
+    scales: { x: { grid: { display: false }, ticks: { font: {family:"'Inter'"} } }, y: { grid: { color: getComputedStyle(document.documentElement).getPropertyValue('--border').trim() }, ticks: { callback: v => v + '%', font: {family:"'Inter'"} }, title: { display: true, text: 'Croissance annuelle' } } }
   }
 });
 

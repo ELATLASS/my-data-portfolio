@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Studies France — My Data Portfolio</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root { --bg: #0a0a0f; --card: #15151f; --text: #e5e7eb; --muted: #9ca3af; --accent: #6366f1; --border: #27272f; }
+    [data-theme="light"] { --bg: #f1f5f9; --card: #ffffff; --text: #1e293b; --muted: #64748b; --border: #e2e8f0; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+    a { color: var(--accent); text-decoration: none; }
+    .nav { display: flex; gap: 0.75rem; margin-bottom: 2rem; flex-wrap: wrap; }
+    .nav a { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 0.4rem 0.8rem; font-size: 0.8rem; color: var(--text); }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+    h1 { font-size: 1.5rem; margin-bottom: 1rem; }
+    h2 { font-size: 1.1rem; margin-bottom: 0.75rem; }
+    p { margin-bottom: 0.75rem; color: var(--muted); font-size: 0.9rem; }
+    ul { padding-left: 1.5rem; color: var(--muted); font-size: 0.9rem; }
+    li { margin-bottom: 0.5rem; }
+    .badge { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 999px; font-size: 0.7rem; font-weight: 600; background: rgba(59,130,246,0.12); color: #3b82f6; }
+    footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border); text-align: center; color: var(--muted); font-size: 0.8rem; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <nav class="nav">
+    <a href="../">← Dashboard principal</a>
+    <a href="../dashboards/w32/">W32 Maroc</a>
+    <a href="../dashboards/france/">Dashboard France</a>
+  </nav>
+
+  <h1>📁 Studies France</h1>
+  <p>Collection des études économiques sur la France — indicateurs INSEE, Eurostat et données sectorielles.</p>
+
+  <div class="card">
+    <h2>Études disponibles</h2>
+    <ul>
+      <li><strong>W32 — France</strong> <span class="badge">2026</span> — Indicateurs économiques (INSEE/Eurostat)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Sources de données</h2>
+    <ul>
+      <li>INSEE — Institut national de la statistique</li>
+      <li>Eurostat — Statistiques européennes</li>
+      <li>Banque de France — données monétaires</li>
+      <li>OECD — indicateurs économiques</li>
+      <li>World Bank Open Data — données mondiales</li>
+    </ul>
+  </div>
+
+  <footer>
+    <p>Créé par El Atlassi · <a href="https://github.com/ELATLASS/my-data-portfolio">ELATLASS/my-data-portfolio</a> · Cycle: lundi 08:00 UTC</p>
+  </footer>
+</div>
+</body>
+</html>

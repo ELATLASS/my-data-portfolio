@@ -84,6 +84,20 @@
     <div class="card"><h3>Répartition régionale</h3><div class="chart-wrap"><canvas id="chartByRegion"></canvas></div></div>
   </div>
 
+  <!-- Trend Chart -->
+  <div class="section">
+    <div class="section-title"><span class="dot"></span> Évolution — Indicateurs sur 4 semaines</div>
+    <div class="grid-2">
+      <div class="card">
+        <h3>📈 PIB (ligne temporelle)</h3>
+        <div class="chart-wrap"><canvas id="chartTrend"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>📉 Croissance par secteur (Top 5)</h3>
+        <div class="chart-wrap"><canvas id="chartGrowth"></canvas></div>
+      </div>
+    </div>
+  </div>
 
   <div class="card" style="margin-bottom:1.5rem;"><h3>💡 Insights clés</h3>
   <div class="insight"><strong>IDF domine le PIB</strong> — L'Île-de-France représente 31% du PIB français régional avec 742 Md€, soit plus que les 5 autres régions combinées.</div>
@@ -182,6 +196,40 @@ new Chart(document.getElementById('chartUnemp'), {
     indexAxis:'y', responsive:true, maintainAspectRatio:false,
     plugins: { legend:{display:false}, tooltip:{callbacks:{label:ctx=>ctx.raw+'%'}} },
     scales: { x:{grid:{color:gridColor},ticks:{font:{family:"'Inter'}},max:15}, y:{grid:{display:false},ticks:{font:{family:"'Inter'"}}} }
+  }
+});
+
+// Trend line chart
+new Chart(document.getElementById('chartTrend'), {
+  type: 'line',
+  data: {
+    labels: ['W29','W30','W31','W32'],
+    datasets: [
+      { label:'PIB (Mds€)', data:[2800,2815,2830,2845], borderColor:'#3b82f6', backgroundColor:'rgba(59,130,246,0.1)', fill:true, tension:0.4, pointRadius:4 },
+      { label:'Inflation (%)', data:[5.2,5.0,4.8,4.6], borderColor:'#ef4444', backgroundColor:'rgba(239,68,68,0.1)', fill:true, tension:0.4, pointRadius:4 },
+      { label:'Chômage (%)', data:[7.8,7.7,7.6,7.5], borderColor:'#f59e0b', backgroundColor:'rgba(245,158,11,0.1)', fill:true, tension:0.4, pointRadius:4 },
+      { label:'Export (Mds€)', data:[520,530,540,550], borderColor:'#10b981', backgroundColor:'rgba(16,185,129,0.1)', fill:true, tension:0.4, pointRadius:4 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { labels: { font: {family:"'Inter'"}, usePointStyle: true, pointStyleWidth: 8 } }, tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + ctx.raw } } },
+    scales: { x: { grid: { color: getComputedStyle(document.documentElement).getPropertyValue('--border').trim() }, ticks: { font: {family:"'Inter'"} } }, y: { grid: { color: getComputedStyle(document.documentElement).getPropertyValue('--border').trim() }, ticks: { font: {family:"'Inter'"} }, title: { display: true, text: 'Valeur' } } }
+  }
+});
+
+// Growth bar chart
+const growthData = [{name:'Services',growth:3.2},{name:'Industrie',growth:2.1},{name:'Agriculture',growth:1.5},{name:'Tech',growth:4.5},{name:'Finance',growth:2.8}];
+new Chart(document.getElementById('chartGrowth'), {
+  type: 'bar',
+  data: {
+    labels: growthData.map(d => d.name),
+    datasets: [{ label: 'Croissance (%)', data: growthData.map(d => d.growth), backgroundColor: growthData.map(d => d.growth >= 3 ? '#10b981' : d.growth >= 2 ? '#3b82f6' : '#f59e0b'), borderRadius: 6, borderSkipped: false }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.raw + '%' } } },
+    scales: { x: { grid: { display: false }, ticks: { font: {family:"'Inter'"} } }, y: { grid: { color: getComputedStyle(document.documentElement).getPropertyValue('--border').trim() }, ticks: { callback: v => v + '%', font: {family:"'Inter'"} }, title: { display: true, text: 'Croissance annuelle' } } }
   }
 });
 

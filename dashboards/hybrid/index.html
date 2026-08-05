@@ -84,6 +84,20 @@
     <div class="card"><h3>Répartition régionale</h3><div class="chart-wrap"><canvas id="chartByRegion"></canvas></div></div>
   </div>
 
+  <!-- Trend Chart -->
+  <div class="section">
+    <div class="section-title"><span class="dot"></span> Évolution — Flux sur 4 semaines</div>
+    <div class="grid-2">
+      <div class="card">
+        <h3>📈 Balance commerciale (ligne temporelle)</h3>
+        <div class="chart-wrap"><canvas id="chartTrend"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>📉 Croissance par catégorie (Top 5)</h3>
+        <div class="chart-wrap"><canvas id="chartGrowth"></canvas></div>
+      </div>
+    </div>
+  </div>
 
   <div class="card" style="margin-bottom:1.5rem;"><h3>💡 Insights clés</h3>
   <div class="insight"><strong>Balance déficitaire de 3.3 Md€</strong> — Le déficit électronique (3.3 Md€) est le poste le plus critique dans les échanges FR↔MA.</div>
@@ -191,6 +205,39 @@ new Chart(document.getElementById('chartRegions'), {
   options: {
     responsive:true, maintainAspectRatio:false,
     plugins: { legend:{position:'right',labels:{font:{family:"'Inter'"},padding:12,usePointStyle:true,pointStyleWidth:8}}, tooltip:{callbacks:{label:ctx=>ctx.label+': '+ctx.raw+'%'}} }
+  }
+});
+
+// Trend line chart
+new Chart(document.getElementById('chartTrend'), {
+  type: 'line',
+  data: {
+    labels: ['W29','W30','W31','W32'],
+    datasets: [
+      { label:'Export MA (Mds€)', data:[180,185,190,195], borderColor:'#6366f1', backgroundColor:'rgba(99,102,241,0.1)', fill:true, tension:0.4, pointRadius:4 },
+      { label:'Import FR (Mds€)', data:[220,215,210,205], borderColor:'#3b82f6', backgroundColor:'rgba(59,130,246,0.1)', fill:true, tension:0.4, pointRadius:4 },
+      { label:'Balance (Mds€)', data:[-40,-30,-20,-10], borderColor:'#10b981', backgroundColor:'rgba(16,185,129,0.1)', fill:true, tension:0.4, pointRadius:4 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { labels: { font: {family:"'Inter'"}, usePointStyle: true, pointStyleWidth: 8 } }, tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + ctx.raw + 'M€' } } },
+    scales: { x: { grid: { color: getComputedStyle(document.documentElement).getPropertyValue('--border').trim() }, ticks: { font: {family:"'Inter'"} } }, y: { grid: { color: getComputedStyle(document.documentElement).getPropertyValue('--border').trim() }, ticks: { callback: v => v + 'M€', font: {family:"'Inter'"} }, title: { display: true, text: 'Balance (M€)' } } }
+  }
+});
+
+// Growth bar chart
+const growthData = [{name:'Agroalimentaire',growth:5.2},{name:'Textile',growth:3.8},{name:'Electronique',growth:2.1},{name:'Pharmaceutique',growth:4.5},{name:'Automobile',growth:1.9}];
+new Chart(document.getElementById('chartGrowth'), {
+  type: 'bar',
+  data: {
+    labels: growthData.map(d => d.name),
+    datasets: [{ label: 'Croissance (%)', data: growthData.map(d => d.growth), backgroundColor: growthData.map(d => d.growth >= 4 ? '#10b981' : d.growth >= 3 ? '#3b82f6' : '#f59e0b'), borderRadius: 6, borderSkipped: false }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.raw + '%' } } },
+    scales: { x: { grid: { display: false }, ticks: { font: {family:"'Inter'"} } }, y: { grid: { color: getComputedStyle(document.documentElement).getPropertyValue('--border').trim() }, ticks: { callback: v => v + '%', font: {family:"'Inter'"} }, title: { display: true, text: 'Croissance annuelle' } } }
   }
 });
 
