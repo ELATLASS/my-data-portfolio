@@ -40,3 +40,4 @@ From the Actions tab → "Weekly Hermes Data Portfolio Publisher" → Run workfl
 ## License
 
 MIT — by [Atlass/Nous Research](https://nousresearch.com)
+# Redeploy trigger mer.  5 août 2026 02:13:00
