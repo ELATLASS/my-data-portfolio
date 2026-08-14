@@ -19,12 +19,14 @@ my-data-portfolio/
 │   └── w33/index.html      (Climat-Agriculture: pluie, sécheresse, irrigation)
 ├── studies/                 ← Raw study data & analysis
 │   ├── maroc/
-│   │   ├── 2026-W29-maroc/  (Population urbaine)
-│   │   ├── 2026-W30-maroc/  (Population urbaine)
-│   │   ├── 2026-W31-maroc/  (Population urbaine)
-│   │   ├── 2026-W32-maroc/  (Population urbaine)
-│   │   └── 2026-W33-climat- (Pluie, sécheresse, opportunités agricoles)
-│   │       agriculture/
+│   │   ├── 2026-W29-maroc/  (Population urbaine — source unique)
+│   │   ├── 2026-W32-maroc/  (Population urbaine — version raffinée)
+│   │   ├── 2026-W33-climat-agriculture/  ← Pluie, sécheresse, opportunités agricoles
+│   │   │   ├── data/       (4 CSV sources complètes)
+│   │   │   ├── figures/    (infographie + figures)
+│   │   │   ├── README.md   (étude complète)
+│   │   │   └── rapport_detail.md (rapport détaillé)
+│   │   └── economie-2026/  ← Nouvelle étude: PIB, chômage, exportations
 │   ├── france/             (Economic indicators — INSEE/Eurostat)
 │   │   └── 2026-W32-france/
 │   └── hybrid/             (FR↔MA trade — Eurostat Comext)
@@ -46,12 +48,13 @@ Every Monday at 08:00 UTC, Hermes Agent publishes **3 topics**:
 
 | Topic | Folder | Source |
 |---|---|---|
-| 🇲🇦 **Maroc** | `studies/maroc/` | HCP (population/demographics) |
+| 🇲🇦 **Maroc** | `studies/maroc/` | HCP (population/demographics) + données climatiques (Open-Meteo) |
 | 🇫🇷 **France** | `studies/france/` | INSEE/Eurostat (economic indicators) |
 | 🌍 **Hybrid** | `studies/hybrid/` | Eurostat Comext (FR↔MA trade) |
 
 Special studies (on-demand):
-- **🌧️ W33 — Climat & Agriculture Maroc** : pluie, sécheresse, opportunités d'irrigation
+- **🌧️ W33 — Climat & Agriculture Maroc**: Pluie, sécheresse (SPI), opportunités d'irrigation — [étude complète](studies/maroc/2026-W33-climat-agriculture/README.md)
+- **💼 Économie Maroc 2026**: PIB par secteur, chômage urbain, exportations — [étude complète](studies/maroc/economie-2026/README.md)
 
 Each topic gets its own dashboard in `dashboards/wXX/` with:
 - KPI cards (dark palette)
