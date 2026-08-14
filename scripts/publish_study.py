@@ -34,6 +34,8 @@ DRY_RUN = os.getenv("DRY_RUN", "false").lower() == "true"
 
 # Topics to generate each week
 TOPICS = ["maroc", "france", "hybrid"]
+# Special topics (generated on-demand)
+SPECIAL_TOPICS = ["climat-agriculture"]
 
 # Detect venv on CI
 if os.path.exists(os.path.join(REPO_ROOT, ".venv")):

@@ -11,15 +11,25 @@ A weekly automated data study journal, generated and published via GitHub Action
 ```
 my-data-portfolio/
 ├── dashboards/              ← Visual dashboards (Chart.js, KPI cards)
-│   ├── w28/index.html      (Hybride FR↔MA trade flows)
+│   ├── w28/index.html      (FR↔MA trade flows)
 │   ├── w29/index.html      (Maroc Population)
 │   ├── w30/index.html      (Maroc Population)
 │   ├── w31/index.html      (Maroc Population)
-│   └── w32/index.html      (Maroc Population)
+│   ├── w32/index.html      (Maroc Population)
+│   └── w33/index.html      (Climat-Agriculture: pluie, sécheresse, irrigation)
 ├── studies/                 ← Raw study data & analysis
-│   ├── maroc/               (W29-W32: 4 weekly studies)
-│   ├── france/              (empty, ready for next week)
-│   └── hybrid/              (W28: FR↔MA trade)
+│   ├── maroc/
+│   │   ├── 2026-W29-maroc/  (Population urbaine)
+│   │   ├── 2026-W30-maroc/  (Population urbaine)
+│   │   ├── 2026-W31-maroc/  (Population urbaine)
+│   │   ├── 2026-W32-maroc/  (Population urbaine)
+│   │   └── 2026-W33-climat- (Pluie, sécheresse, opportunités agricoles)
+│   │       agriculture/
+│   ├── france/             (Economic indicators — INSEE/Eurostat)
+│   │   └── 2026-W32-france/
+│   └── hybrid/             (FR↔MA trade — Eurostat Comext)
+│       ├── 2026-W28-hybride/
+│       └── 2026-W32-hybrid/
 ├── scripts/
 │   └── publish_study.py    ← Weekly publisher (3 topics)
 ├── .github/workflows/
@@ -39,6 +49,9 @@ Every Monday at 08:00 UTC, Hermes Agent publishes **3 topics**:
 | 🇲🇦 **Maroc** | `studies/maroc/` | HCP (population/demographics) |
 | 🇫🇷 **France** | `studies/france/` | INSEE/Eurostat (economic indicators) |
 | 🌍 **Hybrid** | `studies/hybrid/` | Eurostat Comext (FR↔MA trade) |
+
+Special studies (on-demand):
+- **🌧️ W33 — Climat & Agriculture Maroc** : pluie, sécheresse, opportunités d'irrigation
 
 Each topic gets its own dashboard in `dashboards/wXX/` with:
 - KPI cards (dark palette)
@@ -61,7 +74,7 @@ Each topic gets its own dashboard in `dashboards/wXX/` with:
 - **Static site**: HTML + Chart.js (CDN) + CSS custom properties
 - **CI/CD**: GitHub Actions
 - **Hosting**: GitHub Pages (modern build)
-- **Data**: HCP, INSEE, Eurostat (simulated for portfolio)
+- **Data**: HCP, INSEE, Eurostat, FAO, World Bank (simulated for portfolio)
 - **Auth**: GitHub token (`GITHUB_TOKEN`)
 
 ## License
