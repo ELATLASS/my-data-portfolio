@@ -1,0 +1,69 @@
+{
+  "study": "Coupe du Monde 2030 - Maroc",
+  "host_cities": {
+    "Rabat": {
+      "stadium": "Prince Moulay Abdellah Stadium",
+      "capacity": 68700,
+      "status": "new",
+      "region": "Rabat-Salé-Kénitra"
+    },
+    "Casablanca": {
+      "stadium": "Hassan II Stadium",
+      "capacity": null,
+      "status": "new",
+      "region": "Casablanca-Settat"
+    },
+    "Marrakech": {
+      "stadium": "Marrakesh Stadium",
+      "capacity": null,
+      "status": "renovation",
+      "region": "Marrakech-Safi"
+    },
+    "Tangier": {
+      "stadium": "Ibn Batouta Stadium (Tangier Grand Stadium)",
+      "capacity": 75600,
+      "status": "renovation",
+      "region": "Tanger-Al Hoceima"
+    },
+    "Agadir": {
+      "stadium": "Adrar Stadium",
+      "capacity": 46000,
+      "status": "renovation",
+      "region": "Souss-Massa"
+    },
+    "Fez": {
+      "stadium": "Fez Stadium",
+      "capacity": null,
+      "status": "renovation",
+      "region": "Fès-Meknès"
+    }
+  },
+  "total_morocco_stadiums": 6,
+  "co_hosts": ["Morocco", "Portugal", "Spain"],
+  "economic_impact": {
+    "total_fifa_estimate_usd": 7.8e9,
+    "morocco_share": 2.5e9,
+    "direct_investment_mad": 200e8,
+    "direct_jobs": 50000,
+    "tourism_boost_percent": 17.5,
+    "hotel_capacity_increase": 15000
+  },
+  "infrastructure_projects": [
+    {"name": "Rabat-Tangier Highway", "description": "Upgrade to 4-lane highway", "length_km": 450},
+    {"name": "Casablanca-Marrakech High-Speed Rail", "description": "TGV extension", "length_km": 200},
+    {"name": "Tangier Med Port", "description": "Port expansion", "capacity_increase": "30%"},
+    {"name": "Casablanca Mohammed V Airport", "description": "Terminal expansion", "capacity_increase": "25%"},
+    {"name": "Rabat-Sale Airport", "description": "New terminal", "passengers_per_year": 2000000},
+    {"name": "Hotel capacity", "description": "New 3-5 star hotels", "rooms_added": 15000}
+  ],
+  "host_country_shares": {
+    "Spain": 50,
+    "Morocco": 30,
+    "Portugal": 20
+  },
+  "tournament_dates": "8 June – 21 July 2030",
+  "teams_qualified": 48,
+  "matches_total": 84,
+  "morocco_matches": 17,
+  "source": "Wikipedia - 2030 FIFA World Cup"
+}
